@@ -1,0 +1,17 @@
+---
+layout: post
+category : lessons
+tagline: "Supporting tagline"
+tags : [kvm, beginner, jekyll, tutorial]
+---
+{% include JB/setup %}
+
+##KVM##
+
+###硬件支持:
+查看自己的 CPU 是否支持虚拟化技术
+Inter:
+cat /proc/cpuinfo | grep vmx
+AMD :
+cat /proc/cpuinfo | grep svm
+看看 flag 有没有上面的 vmx 或者是 svm,有的话就是支持的。
