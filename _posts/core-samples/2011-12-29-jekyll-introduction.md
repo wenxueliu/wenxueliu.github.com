@@ -7,8 +7,10 @@ tags : [intro, beginner, jekyll, tutorial]
 ---
 {% include JB/setup %}
 
+_config: you can define you variable, the refer in the template.
 This Jekyll introduction will outline specifically  what Jekyll is and why you would want to use it.
-Directly following the intro we'll learn exactly _how_ Jekyll does what it does.
+Directly following the intro we will learn exactly _how_ Jekyll does what it does.
+
 
 ## Overview
 
