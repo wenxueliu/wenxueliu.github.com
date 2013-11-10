@@ -9,13 +9,13 @@ tags : [intro, beginner, jekyll, tutorial]
 
 This is an example of a draft. Read more here: [http://jekyllrb.com/docs/drafts/](http://jekyllrb.com/docs/drafts/)
 
-{% highlight ruby linenos %}
-def show
-  @widget = Widget(params[:id])
-  respond_to do |format|
-    format.html # show.html.erb
-    format.json { render json: @widget }
-  end
+{% highlight  ruby linenos %}
+#def show
+#  @widget = Widget(params[:id])
+#  respond_to do |format|
+#    format.html # show.html.erb
+#    format.json { render json: @widget }
+#  end
 end
 {% endhighlight %}
 

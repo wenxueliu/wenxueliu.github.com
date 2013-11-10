@@ -6,15 +6,16 @@ permalink: /blog/:month/:day/:year/:title
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile",
         "changelog.md","sitemap.txt"]
 
+show_draft: nil
 pygments: true
+
+excerpt_separator : "\n\n"
 
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : Jekyll Blog
-
+title : 文刀旋子
 tagline: Site Tagline
-
 author :
   name : Wenxue Liu
   email : wenxueliu73@gmail.com
@@ -83,7 +84,7 @@ JB :
   # Set 'provider' to false to turn commenting off globally.
   #
   comments :
-    provider : disqus
+    provider : weibo
     disqus :
       short_name : jekyllbootstrap
     livefyre :
@@ -95,7 +96,10 @@ JB :
       num_posts: 5
       width: 580
       colorscheme: light
-   
+    weibo :
+        appkey : 2673137117
+        ralateuid : 1648815335
+
   # Settings for analytics helper
   # Set 'provider' to the analytics provider you want to use.
   # Set 'provider' to false to turn analytics off globally.
@@ -119,7 +123,7 @@ JB :
   #
   sharing :
     provider : false
-    
+
   # Settings for all other include helpers can be defined by creating 
   # a hash with key named for the given helper. ex:
   #
@@ -130,4 +134,3 @@ JB :
   # and include your custom code. Your custom file must be defined at:
   #   ./_includes/custom/[HELPER]
   # where [HELPER] is the name of the helper you are overriding.
-  
