@@ -258,4 +258,6 @@ tmux的状态栏配置非常简单。相比screen就…… 比如我的配置中
 
 [4](http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/)
 
-[5](http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/)
+[5](http://blog.hawkhost.com/2010/07/02/tmux-%E2%80%93-the-terminal-multiplexer-part-2/)
+
+[6](https://github.com/aziz/tmuxinator)
