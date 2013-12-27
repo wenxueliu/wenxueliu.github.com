@@ -1,8 +1,8 @@
 ---
 layout: post
-category : tools
+category : linux
 tagline: "sougou pinyin"
-tags : [software, fcitx]
+tags : [ tools, software, fcitx]
 ---
 
 {% include JB/setup %}

@@ -1,8 +1,8 @@
 ---
 layout: post
-category : tools 
+category :  linux
 tagline: "linux 快捷键"
-tags : [linux, terminal, 效率利器, tutorial]
+tags : [ tools, terminal, 效率利器, tutorial]
 ---
 {% include JB/setup %}
 

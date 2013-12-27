@@ -1,8 +1,8 @@
 ---
 layout: post
-category : tools
+category : linux
 tagline: "效率利器"
-tags : [linux, tmux, tools, tutorial]
+tags : [ tmux, tools, tutorial]
 ---
 {% include JB/setup %}
 
