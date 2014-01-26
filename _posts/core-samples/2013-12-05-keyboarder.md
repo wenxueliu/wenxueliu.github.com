@@ -118,20 +118,21 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     
 5.历史命令
 
-    !!: 重复上次命令
-    !num: 重复执行历史命令中的第num个，可借助history查找。如 !-1 !10等等。
-    string+↑↓: 包含以string开头的历史命令
-    !string  最近的以string开头的命令
-    !string:p 仅仅打印，并不执行最近以string的命令
-    !?string[?] 重复最近的包含string的命令
-    shift+alt+#可以注释命令，这样可以在命令历史中找回。如果用ctrl+C放弃，则不会有记录。
+    !! : 重复上次命令
+    !num : 重复执行历史命令中的第num个，可借助history查找。如 !-1 !10等等。
+    string+↑↓ : 包含以string开头的历史命令
+    !string : 最近的以string开头的命令
+    !string:p : 仅仅打印，并不执行最近以string的命令
+    !?string[?] : 重复最近的包含string的命令
+    shift+alt+# : 可以注释命令，这样可以在命令历史中找回。如果用ctrl+C放弃，则不会有记录。
+    !^ : 上一条命令的最后参数
     !$ : 上一条命令的最后参数
     !$:p 打印上一条命令的最后参数
     !* : 上一命令的所有参数
     !*:p : 打印上一命令的所有参数
     ^string : 删除上一命令的string
-    ^string1^string2 执行上一个命令中，用string1代替string2
-    ^string1^string2^ 执行上一个命令中，string1全部用string2代替
+    ^string1^string2 : 执行上一个命令中，用string1代替string2
+    ^string1^string2^ : 执行上一个命令中，string1全部用string2代替
 
 
 
