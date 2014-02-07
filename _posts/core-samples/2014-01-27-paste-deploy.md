@@ -510,6 +510,6 @@ conifg: URLs 应该与相对与其他位置。比如config:$docroot/.... 也许�
     [app:next_app]
     ...
 
-
+最好的掌握这个模块的方法是找采用这个模块的项目。如果你没有好的项目，那么OpenStack是一个不错的选择，具体可以参考[这里](http://wenxueliu.github.io/blog/01/28/2014/openstack-paste-deploy/)
 
 
