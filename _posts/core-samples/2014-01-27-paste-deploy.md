@@ -11,14 +11,15 @@ tags : [python, translate]
 
 
 **名词的翻译**
-Paste Deployment: PD
-Paste Deploy : PD
-composite application: 组件应用
-composite section: 组件区域
-applications : app
-factories : 工厂函数
-entry point :入口
-key ： 与字典中key类似，配置文件中=左为key，右为value
+
+    Paste Deployment: PD
+    Paste Deploy : PD
+    composite application: 组件应用
+    composite section: 组件区域
+    applications : app
+    factories : 工厂函数
+    entry point :入口
+    key ： 与字典中key类似，配置文件中=左为key，右为value
 
 ###介绍
 
