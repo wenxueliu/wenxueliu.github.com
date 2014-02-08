@@ -7,6 +7,7 @@ tags : [python, translate]
 {% include JB/setup %}
 
 翻译者：刘文学
+
 文档：http://pythonpaste.org/deploy/
 
 
