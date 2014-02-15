@@ -248,6 +248,77 @@ tmux的状态栏配置非常简单。相比screen就…… 比如我的配置中
     tmux select-window -t TMUX_NAME:1
     tmux -2 attach-session -t TMUX_NAME
 
+下面的脚本是一个也是一个脚本，自己可以测试下
+
+    #! /usr/bin/env python
+    import subprocess
+    import os
+
+    def _run_shell_command(cmd, throw_on_error=False, buffer=True, env=None):
+        if buffer:
+            out_location = subprocess.PIPE
+            err_location = subprocess.PIPE
+        else:
+            out_location = None
+            err_location = None
+
+        newenv = os.environ.copy()
+        if env:
+            newenv.update(env)
+
+        output = subprocess.Popen(cmd,
+                                stdout=out_location,
+                                stderr=err_location,
+                                env=newenv)
+        out = output.communicate()
+        if output.returncode and throw_on_error:
+            print "%s returned %d" % (cmd, output.returncode)
+        if len(out) == 0 or not out[0] or not out[0].strip():
+            return ''
+        return out[0].strip().decode('utf-8')
+
+    left_commands = [
+        "vim test1",
+        "vim test2",
+        "vim test3",
+    ]
+    right_commands = [
+        "vim test6",
+        "vim test5",
+    ]
+
+    def tmux_panel(left_commands, right_commands):
+
+        session = ''
+        if right_commands:
+            session += 'tmux selectp -t 0; tmux splitw -hd -p 35 \"%s\"; ' % right_commands[-1]
+        for index, command in enumerate(right_commands[:-1]):
+            session += 'tmux selectp -t 1; tmux splitw -d -p %i \"%s\"; ' % (
+                100 / (len(right_commands) - index),
+                command
+            )
+
+        for index, command in enumerate(left_commands[1:]):
+            session += 'tmux selectp -t 0; tmux splitw -d -p %i \"%s\"; ' % (
+                100 / (len(left_commands) - index),
+                command
+            )
+        if left_commands:
+            session += left_commands[0]
+
+        args = [
+            'tmux',
+            'new-session',
+            session,
+        ]
+
+        print 'Running ', args
+        _run_shell_command(args)
+
+    if __name__== "__main__":
+        tmux_panel(left_commands, right_commands)
+
+
 参考文献
 
 [1](http://foocoder.com/blog/zhong-duan-huan-jing-zhi-tmux.html/)
@@ -261,3 +332,5 @@ tmux的状态栏配置非常简单。相比screen就…… 比如我的配置中
 [5](http://blog.hawkhost.com/2010/07/02/tmux-%E2%80%93-the-terminal-multiplexer-part-2/)
 
 [6](https://github.com/aziz/tmuxinator)
+
+[7](http://blog.ionelmc.ro/2011/09/25/tmux-scripting/)
