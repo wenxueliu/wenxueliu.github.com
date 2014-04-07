@@ -1,6 +1,6 @@
 ---
 layout: post
-category : cpp/c 
+category : cpplang 
 tagline: "柔性数组"
 tags : [ c++/c, linux]
 ---
