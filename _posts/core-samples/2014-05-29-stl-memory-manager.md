@@ -11,9 +11,8 @@ tags : [stl container pointer, destructor]
 容器的空间申请和基本函数操作，以及 algorithm 等都比较好理解，用起来也很方便，比较关键的是容器元素包含指针时，
 空间的申请和释放问题，这个觉得STL做得挺乱的。总结了几点注意的。
 
-自己 new 的空间，在释放的时候必须先 delete，然后再释放容器。例如 list\<char\*\> MS，链表中存的是自己的动态字符串，
-如果字符串是自己动态申请的，则在释放该链表的时候，需要先delete
-\[\]\(\*curIter\)，然后再 MS.erase\(curIter\)，其中
+自己 new 的空间，在释放的时候必须先 delete，然后再释放容器。例如 list \\< char\*> MS，链表中存的是自己的动态字符串，
+如果字符串是自己动态申请的，则在释放该链表的时候，需要先 delete\[ \]\(\* curIter \)，然后再 MS.erase\(curIter\)，其中
 curIter 是当前迭代器。
 
 list的成员函数 erase、remove 和 clear 都会自动调用元素各自的析构函数，所以如果元素是自己定义的类，并且有完善的
