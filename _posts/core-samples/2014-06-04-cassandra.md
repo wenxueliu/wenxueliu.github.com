@@ -15,7 +15,7 @@ tags : [cassandra]
     0.1 : 初始化
 
 **注**
-
+    本文档仅从宏观了解 cassandra 的各方面指标，作为存储系统选择的参考
     性能见附件
 
 Cassandra 简介
@@ -38,6 +38,9 @@ Cassandra 是结合了 Google Bigtable 数据模型和 Amazon Dynamo 分布式�
 * 最小化运维
 * 没有单点故障
 
+架构
+--------------------
+无中心节点
 
 存储机制
 --------------------
@@ -129,13 +132,19 @@ __*注*__
 * Tiered Compaction : 将大小相似的 SStable 压缩，适合写
 * Leveled Compaction : 纵向排序数据，适合读
 
-
+删除
+-------------------------------
+将待删除文档作标记，等待定期的垃圾回收进程删除文档。
 
 [数据模型][module1]
 -------------------------
 表是一个按照主键索引的分布式多维图。它的值是一个高度结构化的对象。表中的记录键是一个没有大小限制的字符串，虽然它通常都只有16-36个字节的长度。无论需要读写多少列，单一记录键的每个副本的每次操作都是一个原子操作。多个列可以组合在一起形成一个称为 column family 的列的集合,
 
-column family： 简单的 column family、超级的 column family（想象成column family里面嵌入column family）
+keyspace : 类似关系型数据库的 database
+column family： 类似关系型数据库的 table。简单的 column family、超级的 column family（想象成column family里面嵌入column family）
+key : 代表一行的关键词
+column : 列名、值、时间戳
+	
 
 列的排序顺序：按时间对列进行排序、按名称对列进行排序。
 
@@ -190,7 +199,6 @@ Cassandra的日常维护工作很简单。任一时刻都可以在某台节点�
 同步或异步，自动备份支持多节点和多数据中心
 
 
-
 [CQL Driver](http://wiki.apache.org/cassandra/ClientOptions)
 -------------------------
 
@@ -212,6 +220,20 @@ DataStax 官方支持(Apache License, Version 2.0)
 * [PHP](code.google.com/a/apache-extras.org/p/cassandra-pdo/) 
 * [Ruby](https://github.com/iconara/cql-rb) 
 * [Scala](https://github.com/eklavya/Scqla)
+
+
+使用场景
+-----------------------------
+Cassandra 确实非常适合时间序列数据，因为可以周期性的将时间序列数据写入1列，
+然后通过部分字符串对比来查询一定时间范围内的数据。这样 的话使用列就比使用行更加的高效，
+而加载单行可以让你获得巨大的I/O性能。
+
+使用MongoDB时，写操作的数量会严重影响到读的性能，而使用Cassandra就不会有这种情况发生。
+
+案例
+-----------------------------
+
+
 
 
 附录
