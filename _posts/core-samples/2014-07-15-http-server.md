@@ -1,3 +1,10 @@
+---
+layout: post
+category : http
+tagline: "详解"
+tags : [ http, network]
+---
+{% include JB/setup %}
 
 Http Server WorkFlow
 ===================================
@@ -10,7 +17,7 @@ Http Server WorkFlow
 7. Log transaction—place notes about the completed transaction in a log file.
 
 
-<img src= {{IMAGE_PATH}}/http/http-server-process.png /img>
+<img src="{{IMAGE_PATH}}/http/http-server-process.png" title="http server process" width="600" />
 
 
 Accepting Client Connections
@@ -35,6 +42,7 @@ ending with a carriage-return line-feed (CRLF) sequence†
 
 Internal Representations of Messages
 -----------------------------
+TODO
 
 * Connection Input/Output Processing Architectures
 -----------------------------
@@ -68,6 +76,7 @@ each site its own distinct document root on the server.
 
 User home directory docroots
 -----------------------------
+TODO
 
 
 Directory Listings
@@ -132,10 +141,12 @@ Redirection
 
 Sending Responses
 ===========================
+TODO
 
 
 Logging
 ===========================
+TODO
 
 
 
@@ -153,7 +164,7 @@ HTTP 是一个基于请求与响应模式的、无状态的、应用层的协议
 
 HTTP协议通常承载于TCP协议之上，有时也承载于TLS或SSL协议层之上，这个时候，就成了我们常说的HTTPS。如下图所示：
 
-<img src = {{ IMAGE_PATH }}/http/http-arch.png  /img>
+<img src="{{ IMAGE_PATH }}/http/http-arch.png" title="http-arch" width="600" />
 
 默认HTTP的端口号为80，HTTPS的端口号为443。
 
@@ -521,13 +532,12 @@ HTTP1.1的客户端和缓存必须将其他非法的日期格式（包括0）看
 
 **Content-MD5**
 
-MD5 实体的一种MD5摘要，用作校验和。发送方和接受方都计算MD5摘要，接受方将其计算的值与此头标中传递的值进行比较。比如：Content-MD5: <base64 of 128 MD5 digest>。
+MD5
+实体的一种MD5摘要，用作校验和。发送方和接受方都计算MD5摘要，接受方将其计算的值与此头标中传递的值进行比较。比如：Content-MD5: base64 of 128 MD5 digest。
 
 **Content-Range**
 
 随部分实体一同发送；标明被插入字节的低位与高位字节偏移，也标明此实体的总长度。比如：Content-Range: 1001-2000/5000，eg2：bytes 2543-4532/7898
-
-
 
 
 附录
