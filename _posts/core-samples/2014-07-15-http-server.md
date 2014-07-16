@@ -6,8 +6,7 @@ tags : [ http, network]
 ---
 {% include JB/setup %}
 
-Http Server WorkFlow
-===================================
+###Http Server WorkFlow
 1. Set up connection—accept a client connection, or close if the client is unwanted.
 2. Receive request—read an HTTP request message from the network.
 3. Process request—interpret the request message and take action.
@@ -20,8 +19,7 @@ Http Server WorkFlow
 <img src="{{IMAGE_PATH}}/http/http-server-process.png" title="http server process" width="600" />
 
 
-Accepting Client Connections
-============================
+###Accepting Client Connections
 
 * Handling New Connections
 * Client Hostname Identification
@@ -31,8 +29,8 @@ names, using “reverse DNS.”
 find out what username initiated an HTTP connection,This information is particularly useful for web server logging
 
 
-Receiving Request Messages
-=============================
+###Receiving Request Messages
+
 * Parses the request line looking for the request method, the specified resource
 identifier (URI), and the version number,* each separated by a single space, and
 ending with a carriage-return line-feed (CRLF) sequence†
@@ -40,81 +38,78 @@ ending with a carriage-return line-feed (CRLF) sequence†
 * Detects the end-of-headers blank line, ending in CRLF (if present)
 * Reads the request body, if any (length specified by the Content-Length header)
 
-Internal Representations of Messages
------------------------------
+####Internal Representations of Messages
 TODO
 
-* Connection Input/Output Processing Architectures
------------------------------
+####Connection Input/Output Processing Architectures
 
 Single-threaded web servers
 Multiprocess and multithreaded web servers
 Multiplexed I/O servers
 Multiplexed multithreaded web servers 
 
-Processing Requests
-=============================
+###Processing Requests
+
 received a request, it can process the request using the
 method, resource, headers, and optional body.
 
-Mapping and Accessing Resources
-=============================
+###Mapping and Accessing Resources
+
 mapping the URI from the request message to the proper content
 or content generator on the web server.
 
-Docroots
------------------------------
+####Docroots
+
 a special folder in the web server filesystem is reserved for web content.
 This folder is called the document root, or docroot. The web server takes the URI
 from the request message and appends it to the document root.
 
-Virtually hosted docroots
------------------------------
+####Virtually hosted docroots
 
 Virtually hosted web servers host multiple web sites on the same web server, giving
 each site its own distinct document root on the server.
 
-User home directory docroots
------------------------------
+####User home directory docroots
+
 TODO
 
 
-Directory Listings
------------------------------
+####Directory Listings
+
 gives people private web sites on a web server. A
 typical convention maps URIs whose paths begin with a slash and tilde (/~) fol-
 lowed by a username to a private document root for that user. 
 
-Dynamic Content Resource Mapping
-----------------------------
+####Dynamic Content Resource Mapping
+
 map URIs to dynamic resources—that is, to programs that gen-
 erate content on demand
 
-Server-Side Includes (SSI)
-----------------------------
+####Server-Side Includes (SSI)
+
 If a resource is flagged as containing server-side includes, the server processes the resource contents
 before sending them to the client.
 
-Access Controls
-----------------------------
+####Access Controls
+
 Web servers also can assign access controls to particular resources.
 
 
-Building Responses
-============================
+###Building Responses
+
 Once the web server has identified the resource, it performs the action described in
 the request method and returns the response message. The response message con-
 tains a response status code, response headers, and a response body if one was gener-
 ated
 
-Response Entities
------------------------------
+####Response Entities
+
 * Content-Type header
 * Content-Length header
 * message body conten
 
-MIME Typing
-----------------------------
+####MIME Typing
+
 * mime.types
 use the extension of the filename to indicate MIME type
 * Magic typing
@@ -129,8 +124,8 @@ configured to store a resource in multiple document
 formats
 
 
-Redirection
----------------------------
+####Redirection
+
 * Permanently moved resources
 * Temporarily moved resources
 * URL augmentation
@@ -139,19 +134,18 @@ Redirection
 * Canonicalizing directory names
 
 
-Sending Responses
-===========================
+###Sending Responses
+
 TODO
 
 
-Logging
-===========================
+###Logging
+
 TODO
 
 
 
-HTTP协议详解之URL篇
-===========================
+###HTTP协议详解之URL篇
 
 HTTP 是 Hyper Text Transfer Protocol（超文本传输协议）的缩写。它的发展是万维网协会（World Wide Web Consortium）和Internet工作小组IETF（Internet Engineering Task Force）合作的结果，（他们）最终发布了一系列的RFC，RFC 1945定义了HTTP/1.0版本。其中最著名的就是RFC 2616。RFC 2616定义了今天普遍使用的一个版本——HTTP 1.1。
 
@@ -187,28 +181,38 @@ HTTP URL 是一种特殊类型的URI，包含了用于查找某个资源的足�
 例：
  	http://www.joes-hardware.com/hammers;sale=false/index.html;graphics=true#profile
 
+**注**
+
+事实上，打开一个网页需要浏览器发送很多次Request，如下
+
+1. 当你在浏览器输入URL http://www.google.com 的时候，浏览器发送一个Request去获取 http://www.google.com 的html.
+服务器把Response发送回给浏览器.
+
+2. 浏览器分析Response中的 HTML，发现其中引用了很多其他文件，比如图片，CSS文件，JS文件。
+
+3. 浏览器会自动再次发送Request去获取图片，CSS文件，或者JS文件。
+
+4. 等所有的文件都下载成功后。 网页就被显示出来了。
+
 
 HTTP协议详解之请求篇
 ============================
- 
 
-http 请求由三部分组成，分别是：请求行、消息报头、请求正文
+http 请求由三部分组成，分别是：请求行(Request line)、请求报头(Request header)、请求正文(body)
 
-请求行
------------------------
+####请求行
+
 包括方法、请求的URI和协议的版本，以空格分开，格式如下：
 
 	Method Request-URI HTTP-Version CRLF 
 
-* Method : 表示请求方法
+* Method : 表示请求方法,当为 GET 的时候，body 为空
 * Request-URI : 一个统一资源标识符
 * HTTP-Version : 表示请求的HTTP协议版本
 * CRLF : 表示回车和换行，即\r\n（除了作为结尾的CRLF外，不允许出现单独的CR或LF字符）。
 
- 
+####请求方法
 
-请求方法
------------------------
 （所有方法全为大写）有多种，各个方法的解释如下：
 
 	GET     请求获取Request-URI所标识的资源
@@ -242,23 +246,21 @@ POST方法： 要求被请求服务器接受附在请求后面的数据，常用
 
 HEAD方法与GET方法几乎是一样的，对于HEAD请求的回应部分来说，它的HTTP头部中包含的信息与通过GET请求所得到的信息是相同的。利用这个方法，不必传输整个资源内容，就可以得到 Request-URI 所标识的资源的信息。该方法常用于测试超链接的有效性，是否可以访问，以及最近是否更新。
 
-请求报头
---------------------
+####请求报头
+
 后述
 
-请求正文
---------------------
+####请求正文
+
 (略) 
 
 
-HTTP协议详解之响应篇
-============================
+###HTTP协议详解之响应篇
  
 
-HTTP响应也是由三个部分组成，分别是：状态行、消息报头、响应正文
+HTTP响应也是由三个部分组成，分别是：状态行(Response line)、消息报头(Response header)、响应正文(body)
 
-状态行
---------------------------
+####状态行
 
 格式如下：
 
@@ -266,7 +268,7 @@ HTTP响应也是由三个部分组成，分别是：状态行、消息报头、�
 	
 * HTTP-Version : 表示服务器HTTP协议的版本
 * Status-Code : 表示服务器发回的响应状态代码
-* Reason-Phrase表示状态代码的文本描述。
+* Reason-Phrase : 表示状态代码的文本描述。
 
 状态代码有三位数字组成，第一个数字定义了响应的类别，且有五种可能取值：
 
@@ -281,6 +283,7 @@ HTTP响应也是由三个部分组成，分别是：状态行、消息报头、�
 常见状态代码、状态描述、说明：
 
 	200 OK      //客户端请求成功
+    304 Not Modified  //客户端已经缓存所请求的内容
 	400 Bad Request  //客户端请求有语法错误，不能被服务器所理解
 	401 Unauthorized //请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用
 	403 Forbidden  //服务器收到请求，但是拒绝提供服务
@@ -293,20 +296,17 @@ HTTP响应也是由三个部分组成，分别是：状态行、消息报头、�
 
 HTTP/1.1 200 OK （CRLF）
 
- 
 
-响应报头
-------------------------
+####响应报头
+
 后述
 
-响应正文
-------------------------
+####响应正文
+
 服务器返回的资源的内容
 
- 
-HTTP协议详解之消息报头篇
-========================
- 
+
+###HTTP协议详解之消息报头篇
 
 HTTP 消息由客户端到服务器的请求和服务器到客户端的响应组成。请求消息和响应消息都是由开始行（对于请求消息，开始行就是请求行，对于响应消息，开始行就是状态行），消息报头（可选），空行（只有CRLF的行），消息正文（可选）组成。
 
@@ -407,13 +407,12 @@ Host请求报头域主要用于指定被请求资源的Internet主机和端口�
 
 我们上网登陆论坛的时候，往往会看到一些欢迎信息，其中列出了你的操作系统的名称和版本，你所使用的浏览器的名称和版本，这往往让很多人感到很神奇，实际上，服务器应用程序就是从 User-Agent 这个请求报头域中获取到这些信息。User-Agent请求报头域允许客户端将它的操作系统、浏览器和其它属性告诉服务器。不过，这个报头域不是必需的，如果我们自己编写一个浏览器，不使用User-Agent请求报头域，那么服务器端就无法得知我们的信息了。
 
-	
 **Referer**
 
 Referer头域允许客户端指定请求uri的源资源地址，这可以允许服务器生成回退链表，可用来登陆、优化cache等。他也允许废除的或错误的连接由于维护的目的被追踪。如果请求的uri没有自己的uri地址，Referer不能被发送。如果指定的是部分uri地址，则此地址应该是一个相对地址。比如
 
 	Referer : http://imge.google.com/\r\n
-	
+
 **Content-Length**
 
 表示请求消息正文的长度；	
@@ -539,6 +538,9 @@ MD5
 
 随部分实体一同发送；标明被插入字节的低位与高位字节偏移，也标明此实体的总长度。比如：Content-Range: 1001-2000/5000，eg2：bytes 2543-4532/7898
 
+**注**
+请求报头必须包含 Host
+响应抱头必须包含 Content-Length 或 Transfer-Encodeing
 
 附录
 ======================
