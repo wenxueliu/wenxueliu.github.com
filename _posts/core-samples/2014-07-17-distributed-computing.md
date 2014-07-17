@@ -6,6 +6,14 @@ tags : [ distributed computing]
 ---
 {% include JB/setup %}
 
+###加速数据访问的方法
+
+1 缓存
+2 代理
+3 索引
+4 负载均衡
+
+
 ###The Eight Fallacies of Distributed Computing by Peter Deutsch
 
 Essentially everyone, when they first build a distributed application, makes the following eight assumptions. All prove to be false in the long run and all cause big trouble and painful learning experiences.
