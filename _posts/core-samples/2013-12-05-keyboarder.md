@@ -169,3 +169,16 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     echo \{\{A..Z\},{a..z},{0..9}\}
 
 
+7. 超级利器
+
+在自己的用户主目录（home directory）新建一个 .inputrc 文件：
+
+	$ vi ~/.inputrc
+	"\e[A": history-search-backward
+	"\e[B": history-search-forward
+	set show-all-if-ambiguous on
+	set completion-ignore-case on
+
+退出 bash 后重新登陆，敲打一个字母或者几个字母，然后 “上下” 键，就会看到以这个字母搜索到的完整命令行。如果搜索到几个类似命令，通过上下键来切换，有点像 ctrl+r，但是更好用。
+
+
