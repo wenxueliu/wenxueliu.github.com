@@ -174,7 +174,7 @@ HTTP URL 是一种特殊类型的URI，包含了用于查找某个资源的足�
 * frag 		specify the sections within the resource. It is separated by the “#” 		None
  
 例：
- 	http://www.joes-hardware.com/hammers;sale=false/index.html;graphics=true#profile
+ 	http://www.joes-hardware.com/hammers;sale=false/index.html?graphics=true#profile
 
 
 HTTP协议详解之请求篇
