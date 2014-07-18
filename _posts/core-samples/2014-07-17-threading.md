@@ -1,4 +1,10 @@
-
+---
+layout: post
+category : thread
+tagline: "thread 解析"
+tags : [ thread ]
+---
+{% include JB/setup %}
 
 
 原子操作：

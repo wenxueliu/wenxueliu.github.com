@@ -12,3 +12,5 @@ GUN/LINUX环境编程（第二版） M.Tim Jones 张元章译  清华大学出�
    顺便说下，M.Tim Jones是MIT的哦。http://www.ibm.com/developerworks/cn/linux/theme/mtj/
 
 linux shell从入门到精通    人民邮电出版社  张昊
+
+TCP/IP网络编程技术基础  王雷编   清华大学出版社·北京交通大学出版社
