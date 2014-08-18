@@ -1,3 +1,11 @@
+---
+layout: post
+category : linux
+tagline: "安装"
+tags : [ operation, ftp]
+---
+{% include JB/setup %}
+
 
 由于多次部署 ftp server,网上的资料太杂，故记录一个靠谱的。
 
