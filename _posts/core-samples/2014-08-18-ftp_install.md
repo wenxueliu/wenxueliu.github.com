@@ -12,24 +12,20 @@ tags : [ operation, ftp]
 
 ###安装
 
-测试环境 
+测试环境
 
 	Linux localhost 2.6.32-431.el6.x86_64 #1 SMP Fri Nov 22 03:15:09 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux
-	
-注
-> root权限执行
-> 备份对应配置文件
 
 第一步：安装vsftp pam db4
 
 	yum install vsftpd pam* db4* -y
-	
+
 第二步：配置vsftpd服务的宿主
 
 	useradd vsftpdadmin -s /sbin/nologin
 
-第三步：建立ftp虚拟宿主帐户 
-	
+第三步：建立ftp虚拟宿主帐户
+
 	useradd ftpuser -s /sbin/nologin
 
 第四步：配置vsftpd.conf
@@ -38,11 +34,11 @@ vim /etc/vsftpd/vsftpd.conf
 
 修改
 
-	anonymous_enable=YES  -->  anonymous_enable=NO   //不允许匿名用户访问，默认是允许。 
+	anonymous_enable=YES  -->  anonymous_enable=NO   //不允许匿名用户访问，默认是允许。
 
 	#chroot_list_enable=YES  -->  chroot_list_enable=YES      //不允许FTP用户离开自己主目录，默认是被注释掉的。
-	#chroot_list_file=/etc/vsftpd/chroot_list --> chroot_list_file=/etc/vsftpd/chroot_list  //如果开启了chroot_list_enable=YES，那么一定要开启这个，这条是锁定登录用户只能家目录的位置，如果不开启用户登录时就会报500 OOPS的错。 
-	local_enable=YES      //允许本地用户访问，默认就是YES，不用改 
+	#chroot_list_file=/etc/vsftpd/chroot_list --> chroot_list_file=/etc/vsftpd/chroot_list  //如果开启了chroot_list_enable=YES，那么一定要开启这个，这条是锁定登录用户只能家目录的位置，如果不开启用户登录时就会报500 OOPS的错。
+	local_enable=YES      //允许本地用户访问，默认就是YES，不用改
 	local_enable=YES      //允许本地用户访问，默认就是YES，不用改
 	write_enable=YES      //允许写入，默认是YES，不用改
 	local_umask=022       //上传后文件的权限掩码，不用改
@@ -76,25 +72,25 @@ vim /etc/vsftpd/vsftpd.conf
 
 	touch /var/log/vsftpd.log    //日志文件
 	chown vsftpdadmin.vsftpdadmin /var/log/vsftpd.log   //属于vsftpdadmin这个宿主
-	
+
 第六步：建立虚拟用户文件
 
-	mkdir /etc/vsftpd/vconf/ 
+	mkdir /etc/vsftpd/vconf/
 	touch /etc/vsftpd/vconf/vir_user
-	
-第七步：建立虚拟用户 
+
+第七步：建立虚拟用户
 
 	vim /etc/vsftpd/vconf/vir_user
-	
+
 	virtualuser           //用户名
 	12345678           //密码
-	
+
 	注意：第一行用户名，第二行是上一行用户名的密码，其他人的以此类推
 
 第八步：生成数据库
 
 	#db_load -T -t hash -f /etc/vsftpd/vconf/vir_user /etc/vsftpd/vconf/vir_user.db
-	
+
 第九步：设置数据库文件的访问权限
 
 	#chmod 600 /etc/vsftpd/vconf/vir_user.db
@@ -104,15 +100,15 @@ vim /etc/vsftpd/vsftpd.conf
 
 	echo "auth required pam_userdb.so db=/etc/vsftpd/vconf/vir_user" >> /etc/pam.d/vsftpd
 	echo "account required pam_userdb.so db=/etc/vsftpd/vconf/vir_user" >> /etc/pam.d/vsftpd 
-	
+
 第十一步：创建用户的配置文件
 
 	注意：用户配置文件的名字要和创建的“虚拟用户”名字对应
-	
+
 	#touch /etc/vsftpd/vconf/virtualuser
-	
+
 	#vim /etc/vsftpd/vconf/virtualuser
-	
+
 	输入：
 	local_root=/home/virtualuser           //虚拟用户的个人目录路径
 	anonymous_enable=NO
@@ -125,7 +121,7 @@ vim /etc/vsftpd/vsftpd.conf
 	max_clients=10
 	max_per_ip=5
 	local_max_rate=1048576     //本地用户的最大传输速度，单位是Byts/s，我设定的是10M
-	
+
 	以上根据自己的需要取舍
 
 第十二步：建立虚拟用户目录
@@ -134,7 +130,7 @@ vim /etc/vsftpd/vsftpd.conf
 	# mkdir /home/virtualuser
 	# chown ftpuser.ftpuser ./virtualuser
 	# chmod 600 /home/virtualuser
-	
+
 配置就此完成，如果想增加新的用户，只要按照上面的第七步、第十步进行就可以了。
 
 
@@ -148,29 +144,29 @@ Q:外网无法登录，550错误，错误: 读取目录列表失败
 
 A:路由器的配置，有开放TCP 20端口
 
-Q:在链接ftp服务器连接失败,错误提示:  500 OOPS: cannot change directory:/home/*******
+Q:在链接ftp服务器连接失败,错误提示:  500 OOPS: cannot change directory:/home/XXX
 
-A: 
+A:
 	setsebool -P ftpd_disable_trans1
 	service vsftpd restart
 
 	查看 chroot_list 文件中是否有你要增加的用户名
-	
-Q: ftp: connect: No route to host 
+
+Q: ftp: connect: No route to host
 
 A:
-	vi /etc/sysconfig/iptables-config 
+	vi /etc/sysconfig/iptables-config
 	添加一行：IPTABLES_MODULES="ip_nat_ftp ip_conntrack_ftp"
 	service iptables restart
-	
+
 	vi  /etc/sysconfig/iptables        # 打开配置文件 ，添加如下信息
 	-A INPUT -m state --state NEW -m tcp -p tcp --dport 20 -j ACCEPT
  	-A INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
- 	
+
 ###其他
- 
+
 ####创建用户
-	
+
 	sudo adduser --home=/home/test --disable-login  test
 	sudo passwd test
 	sudo chmod 555 -R  /home/ftp_server  #如果配置文件的wirte_enable为No，那么这里的用户目录不能有写权限
