@@ -8,8 +8,8 @@ tags : [linux, tools]
 
 远程登陆与执行
 
-* ssh 
-* pssh 
+* ssh
+* pssh
 * Fabric
 
 
@@ -55,6 +55,7 @@ tags : [linux, tools]
 * grep
 * cut
 * sort
+* tee
 
 
 调试
