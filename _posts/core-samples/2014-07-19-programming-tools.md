@@ -89,11 +89,11 @@ But they also include:
 ####内存调试
 
 * [Valgrind](http://valgrind.org/) :  instrumentation framework for building dynamic analysis tools.
-                         
+
 * [yamd](http://www.cs.hmc.edu/~nate/yamd/) : finding dynamic allocation related bugs in C and C++.
 
 * [mtrace](http://en.wikipedia.org/wiki/Mtrace) : memory debugger included in the GNU C Library.
-          
+
 一篇关于内存调试的文章：[中文版](http://www.ibm.com/developerworks/cn/linux/sdk/l-debug/index.html#resource) 
 
 ####解析器
@@ -103,17 +103,16 @@ But they also include:
 * [bison](https://www.gnu.org/software/bison/) : general-purpose parser generator that converts an annotated context-free grammar into a deterministic LR or generalized LR (GLR) parser employing LALR(1) parser tables.
 
 * cxref   为一个或多个源文件生成HTML列表。 仅用于C，不支持C++
-          
+
 ####调用跟踪器
 
 * strace：系统调用跟踪器，可以跟踪你的程序所调用的系统调用 man strace
 
 * ltrace：动态库调用跟踪器，可以跟踪你的程序所调用的动态库接口 man ltrace
 
-* [cflow](http://www.gnu.org/software/cflow/) : analyzes a collection of C source files and prints a graph, charting control flow within the program. 
-		    
+* [cflow](http://www.gnu.org/software/cflow/) : analyzes a collection of C source files and prints a graph, charting control flow within the program .
 
-####性能分析器
+# ###性能分析器
 
 * gprof：binutils中带的性能分析器，可以帮助你优化你的代码，提高程序速度
 
@@ -137,39 +136,4 @@ But they also include:
 
 [quilt](http://savannah.nongnu.org/projects/quilt)  easily manage large numbers of patches by keeping track of the changes each patch makes.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-   
-  
-  
 
