@@ -76,9 +76,9 @@ Linux的top或者ps都可以查看进程的cpu利用率，那为什么还需要�
 
 	CPU消耗 = cat /proc/[pid]/stat | awk '{print "cpu_process_total_slice " $14+$15+$16+$17}'
 
-####/proc/[pid]/task/<tid>/stat
+####/proc/[pid]/task/[tid]/stat
 
-该文件包含了某一进程所有的活动的信息，该文件中的所有值都是从系统启动开始累计到当前时刻。该文件的内容格式以及各字段的含义同/proc/<pid>/stat文件。该文件中的tid字段表示的不再是进程号，而是linux中的轻量级进程(lwp)，即我们通常所说的线程。
+该文件包含了某一进程所有的活动的信息，该文件中的所有值都是从系统启动开始累计到当前时刻。该文件的内容格式以及各字段的含义同/proc/[pid]/stat文件。该文件中的tid字段表示的不再是进程号，而是linux中的轻量级进程(lwp)，即我们通常所说的线程。
 
 proc下有其他文件，更多见 `man 5 proc`
 
@@ -89,12 +89,12 @@ proc下有其他文件，更多见 `man 5 proc`
 没有某一时刻速度的概念，速度一定是一个时间段之内的。那么要"非阻塞"计算某个进程CPU利用率，则需要取两次事件间隔进行
 计算，这两次事件间隔的操作可以是非阻塞的。计算办法如下：
 
-* 时刻A，计算操作系统总CPU时间片消耗total_cpu_slice_A；计算进程总CPU时间片消耗；total_process_slice_
+* 时刻A，计算操作系统总CPU时间片消耗total_cpu_slice_A；计算进程总CPU时间片消耗；total_process_slice_A
 * 时刻B，计算操作系统总CPU时间片消耗total_cpu_slice_B；计算进程总CPU时间片消耗；total_process_slice_B
 
 B时刻就可以"非阻塞"的计算这段时间进程的CPU利用率了：
 
-	100%*(total_process_slice_B-total_process_slice_A)/(total_cpu_slice_B-total_cpu_slice_A)
+	100% \* (total_process_slice_B-total_process_slice_A)/(total_cpu_slice_B-total_cpu_slice_A)
 
 ####单核情况下Cpu使用率的计算
 
@@ -119,7 +119,7 @@ B时刻就可以"非阻塞"的计算这段时间进程的CPU利用率了：
 
 4 计算cpu使用率
 
-pcpu =100* (total-idle)/total
+pcpu =100 \* (total-idle)/total
 
 ####某一进程Cpu使用率的计算
 
@@ -129,17 +129,19 @@ pcpu =100* (total-idle)/total
 * 每一个进程快照均为 (utime、stime、cutime、cstime)的4元组；
 
 2．计算两个时刻的总的cpu时间与进程的cpu时间，分别记作：totalCpuTime1、totalCpuTime2、processCpuTime1、processCpuTime2
-3．计算该进程的cpu使用率pcpu = 100*( processCpuTime2 – processCpuTime1) / (totalCpuTime2 – totalCpuTime1) (按100%计算，如果是多核情况下还需乘以cpu的个数);
+3．计算该进程的cpu使用率pcpu = 100 \* ( processCpuTime2 – processCpuTime1) / (totalCpuTime2 – totalCpuTime1) (按100%计算，如果是多核情况下还需乘以cpu的个数);
 
 **某一线程Cpu使用率的计算**
 
-1 采样两个足够短的时间隔的cpu快照与线程快照，
+1 采样
+
+* 采样两个足够短的时间隔的cpu快照与线程快照，
 * 每一个cpu快照均为(user、nice、system、idle、iowait、irq、softirq、stealstealon、guest)的9元组;
 * 每一个线程快照均为 (utime、stime)的2元组；
 
 2 计算出两个时刻的总的cpu时间与线程的cpu时间，分别记作：totalCpuTime1、totalCpuTime2、threadCpuTime1、threadCpuTime2
 
-3 计算该线程的cpu使用率pcpu = 100*( threadCpuTime2 – threadCpuTime1) / (totalCpuTime2 – totalCpuTime1) (按100%计算，如果是多核情况下还需乘以cpu的个数); 
+3 计算该线程的cpu使用率pcpu = 100 × ( threadCpuTime2 – threadCpuTime1) / (totalCpuTime2 – totalCpuTime1) (按100%计算，如果是多核情况下还需乘以cpu的个数);
 
 ####多核情况下cpu使用率的计算
 
@@ -162,7 +164,7 @@ pcpu =100* (total-idle)/total
 	SYS_IDLE=`expr $SYS_IDLE_2 - $SYS_IDLE_1`
 
 	Total=`expr $Total_2 - $Total_1`
-	SYS_USAGE=`expr $SYS_IDLE/$Total*100 |bc -l`
+	SYS_USAGE=`expr $SYS_IDLE/$Total\*100 |bc -l`
 
 	SYS_Rate=`expr 100-$SYS_USAGE |bc -l`
 
@@ -202,7 +204,7 @@ pcpu =100* (total-idle)/total
 
 	$JIFF_0=$USER[0]+$NICE[0]+$SYSTEM[0]+$IDLE[0]+$IOWAIT[0]+$IRQ[0]+$SOFTIRQ[0];
 	$JIFF_1=$USER[1]+$NICE[1]+$SYSTEM[1]+$IDLE[1]+$IOWAIT[1]+$IRQ[1]+$SOFTIRQ[1];
-	$SYS_IDLE=($IDLE[0]-$IDLE[1]) / ($JIFF_0-$JIFF_1) * 100;  $SYS_USAGE=100 - $SYS_IDLE;
+	$SYS_IDLE=($IDLE[0]-$IDLE[1]) / ($JIFF_0-$JIFF_1) \* 100;  $SYS_USAGE=100 - $SYS_IDLE;
 
 	printf ("The CPU usage is %1.2f%%\n",$SYS_USAGE);
 
@@ -215,14 +217,14 @@ pcpu =100* (total-idle)/total
 	%cpu   cpu utilization of the process in "##.#" format. It is the CPU time used                           divided by the time the process has been running (cputime/realtime ratio),                           expressed as a percentage. It will not add up to 100% unless you are lucky.
 
 
-结论5：ps命令算出来的cpu使用率相对于进程启动时的平均值，随着进程运行时间的增大，该值会趋向于平缓。
+结论：ps命令算出来的cpu使用率相对于进程启动时的平均值，随着进程运行时间的增大，该值会趋向于平缓。
 
 
 ####top命令
 
 通过top命令可以查看系统中相关进程的实时信息（cpu使用率等）。以下是man文档中对top命令输出中有关进程cpu使用率的解释。
 
-* #C  --  Last used CPU (SMP)
+* P  --  Last used CPU (SMP)
 
 A number representing the last used processor. In a true  SMP  environment  this  will  likely change  frequently  since  the  kernel intentionally uses weak affinity.  Also, the very act of running top may break this weak affinity and cause more processes to  change  CPUs  more  often (because of the extra demand for cpu time).
 
