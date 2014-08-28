@@ -1,6 +1,6 @@
 ---
 layout: post
-category : tool 
+category : tools
 tagline: "git reference"
 tags : [ git ]
 ---
