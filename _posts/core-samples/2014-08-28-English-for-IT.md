@@ -6,6 +6,17 @@ tags : [ English ]
 ---
 {% include JB/setup %}
 
+
+####Profession
+* LSB(least significant byte) : 最不重要位，big-endian 高地址在LSB,little-endian 低地址在LSB
+* MSB(most significant byte) : 最重要位
+
+    |p[3]|p[2]|p[1]|p[0]|
+    MSB               LSB
+
+* 不管字节顺序如何，MSB总在左边，LSB总在右边
+####Writing
+
 * outperform :  A outperform(胜过,优于) B
 * reinvent the wheel:  重新造轮子
 * on-the-fly : 在运行当中
@@ -35,3 +46,6 @@ tags : [ English ]
 * round-robin : 循环
 * silver bullet : 银弹
 * tl;dr : too long don't read
+* it is the de facto ... : 事实上
+* obsolete : 废弃，舍弃，通畅用于表示某个接口，比如, nestat is obsolete
+* reentrant : 可重入的. 比如 getaddrinfo is reentrant.
