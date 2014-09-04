@@ -194,10 +194,104 @@ error.
 
         ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags,
                         const struct sockaddr *destaddr, socklen_t destlen);
-                Returns: number of bytes sent if OK, −1 on error
+                    Returns: number of bytes sent if OK, −1 on error
 
         ssize_t sendmsg(int sockfd, const struct msghdr *msg, int flags);
-                Returns: number of bytes sent if OK, −1 on error
+                    Returns: number of bytes sent if OK, −1 on error
 
 sendmsg with a msghdr structure to specify multiple buffers from which
 to transmit data
+
+        ssize_t recv(int sockfd, void *buf, size_t nbytes, int flags);
+                    Returns: length of message in bytes,0 if no messages are available and
+                    peer has done an orderly shutdown, or −1 on error
+
+With SOCK_STREAM sockets, we can receive less data than we requested. The
+MSG_WAITALL flag inhibits this behavior, preventing recv from returning until
+all the data we requested has been received. With SOCK_DGRAM and SOCK_SEQPACKET
+sockets, the MSG_WAITALL flag provides no change in behavior, because these
+message-based socket types already return an entire message in a single read.
+
+
+        ssize_t recvfrom(int sockfd, void *restrict buf, size_t len, int flags,
+                struct sockaddr *restrict addr, socklen_t *restrict addrlen);
+                    Returns: length of message in bytes,0 if no messages are available and
+                    peer has done an orderly shutdown, or −1 on error
+
+recvfrom is typically used with connectionless sockets. Otherwise,
+recvfrom behaves identically to recv.
+
+        ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);
+                    Returns: length of message in bytes,0 if no messages are available and
+                    peer has done an orderly shutdown, or −1 on error
+
+
+###Socket Options
+
+        #include <sys/socket.h>
+        int setsockopt(int sockfd, int level, int option, const void *val, socklen_t len);
+        int getsockopt(int sockfd, int level, int option, void *restrict val,socklen_t *restrict lenp);
+                Returns: 0 if OK, −1 on error
+
+###Out-of-Band Data
+
+Out-of-band data is an optional feature supported by some communication
+protocols, allowing higher-priority delivery of data than normal. Out-of-band
+data is sent ahead of any data that is already queued for transmission. TCP
+supports out-of-band data, but UDP doesn’t. The socket interface to out-of-band
+data is heavily influenced by TCP’s implementation of out-of-band data.
+
+TCP refers to out-of-band data as ‘‘urgent’’ data. TCP supports only a single
+byte of urgent data, but allows urgent data to be delivered out of band from the
+normal data delivery mechanisms. To generate urgent data, we specify the MSG_OOB
+flag to any of the three send functions. If we send more than one byte with the
+MSG_OOB flag, the last byte will be treated as the urgent-data byte.
+
+        #include <sys/socket.h>
+        identify when we have reached the urgent mark
+        int sockatmark(int sockfd);
+                Returns: 1 if at mark, 0 if not at mark, −1 on error
+
+
+###Nonblocking and Asynchronous I/O
+
+Normally, the recv functions will block when no data is immediately available.
+Similarly, the send functions will block when there is not enough room in the
+socket’s output queue to send the message. This behavior changes when the socket
+is in nonblocking mode.
+
+In this case, these functions will fail instead of blocking, setting errno to
+either EWOULDBLOCK or EAGAIN. When this happens, we can use either poll or
+select to determine when we can receive or transmit data.
+
+
+* The Single UNIX Specification
+* classic socket-based asynchronous I/O
+
+With socket-based asynchronous I/O, we can arrange to be sent the SIGIO signal
+when we can read data from a socket or when space becomes available in a
+socket’s write queue. Enabling asynchronous I/O is a two-step process.
+
+* Establish socket ownership so signals can be delivered to the proper processes.
+* Inform the socket that we want it to signal us when I/O operations won’t block.
+
+We can accomplish the first step in three ways.
+* Use the F_SETOWN command with fcntl.
+* Use the FIOSETOWN command with ioctl.
+* Use the SIOCSPGRP command with ioctl.
+
+To accomplish the second step, we have two choices.
+* Use the F_SETFL command with fcntl and enable the O_ASYNC file flag.
+* Use the FIOASYNC command with ioctl.
+
+###Conclusion
+
+In this chapter, we looked at the IPC mechanisms that allow processes to
+communicate with other processes on different machines as well as within the
+same machine.  We discussed how socket endpoints are named and how we can
+discover the addresses to use when contacting servers.
+
+We presented examples of clients and servers that use connectionless (i.e.,
+datagram-based) sockets and connection-oriented sockets. We briefly discussed
+asynchronous and nonblocking socket I/O and the interfaces used to manage socket
+options.
