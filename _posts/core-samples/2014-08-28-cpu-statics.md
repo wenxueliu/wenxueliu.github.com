@@ -71,6 +71,29 @@ Linux的top或者ps都可以查看进程的cpu利用率，那为什么还需要�
 
 	$cat /proc/1/stat
 	1 (init) S 0 1 1 0 -1 4219136 28147 1146579 27 1969 42 80 20317 2329 20 0 1 0 3 27717632 741 18446744073709551615 1 1 0 0 0 0 0 4096 536962595 18446744073709551615 0 0 17 0 0 0 174 0 0 0 0 0 0 0 0 0 0
+	
+	  Field          Content
+	  pid           process id
+	  tcomm         filename of the executable
+	  state         state (R is running, S is sleeping, D is sleeping in an
+		            uninterruptible wait, Z is zombie, T is traced or stopped)
+	  ppid          process id of the parent process
+	  pgrp          pgrp of the process
+	  sid           session id
+	  tty_nr        tty the process uses
+	  tty_pgrp      pgrp of the tty
+	  flags         task flags
+	  min_flt       number of minor faults
+	  cmin_flt      number of minor faults with child's
+	  maj_flt       number of major faults
+	  cmaj_flt      number of major faults with child's
+	  utime         user mode jiffies
+	  stime         kernel mode jiffies
+	  cutime        user mode jiffies with child's
+	  cstime        kernel mode jiffies with child's
+
+	user_util = 100 * (utime_after - utime_before) / (time_total_after - time_total_before);
+	sys_util = 100 * (stime_after - stime_before) / (time_total_after - time_total_before);
 
 输出的第14、15、16、17列分别对应进程用户态 CPU消耗、内核态的消耗、用户态等待子进程的消耗、内核态等待子进程的消耗(man proc)
 
@@ -208,6 +231,35 @@ pcpu =100 \* (total-idle)/total
 
 	printf ("The CPU usage is %1.2f%%\n",$SYS_USAGE);
 
+
+###某个进程CPU 利用率
+
+	#!/usr/bin/env bash
+
+	# calculate the cpu usage of a single process
+	# jvehent oct.2013
+
+	[ -z $1 ] && echo "usage: $0 <pid>"
+
+	sfile=/proc/$1/stat
+	if [ ! -r $sfile ]; then echo "pid $1 not found in /proc" ; exit 1; fi
+
+	proctime=$(cat $sfile|awk '{print $14}')
+	totaltime=$(grep '^cpu ' /proc/stat |awk '{sum=$2+$3+$4+$5+$6+$7+$8+$9+$10; print sum}')
+
+	echo "time                        ratio      cpu%"
+
+	while [ 1 ]; do
+		sleep 1
+		prevproctime=$proctime
+		prevtotaltime=$totaltime
+		proctime=$(cat $sfile|awk '{print $14}')
+		totaltime=$(grep '^cpu ' /proc/stat |awk '{sum=$2+$3+$4+$5+$6+$7+$8+$9+$10; print sum}')
+		ratio=$(echo "scale=2;($proctime - $prevproctime) / ($totaltime - $prevtotaltime)"|bc -l)
+		echo "$(date --rfc-3339=seconds);  $ratio;      $(echo "$ratio*100"|bc -l)"
+	done
+
+
 ####ps 命令
 
 通过ps命令可以查看系统中相关进程的Cpu使用率的信息。以下在linux man文档中对ps命令输出中有关cpu使用率的解释：
@@ -238,3 +290,7 @@ The task’s share of the elapsed CPU time since the last screen update, express
 http://www.orczhou.com/index.php/2013/10/how-linux-caculate-cpu-usage-for-process/ 
 
 http://www.penglixun.com/tech/system/how_to_calc_load_cpu.html
+
+http://stackoverflow.com/questions/1420426/calculating-cpu-usage-of-a-process-in-linux/1424556#1424556
+
+http://stackoverflow.com/questions/16726779/total-cpu-usage-of-an-application-from-proc-pid-stat
