@@ -49,3 +49,4 @@ tags : [ English ]
 * it is the de facto ... : 事实上
 * obsolete : 废弃，舍弃，通畅用于表示某个接口，比如, nestat is obsolete
 * reentrant : 可重入的. 比如 getaddrinfo is reentrant.
+* trail-and-error process
