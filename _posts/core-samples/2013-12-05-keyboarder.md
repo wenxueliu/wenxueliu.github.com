@@ -22,16 +22,16 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
 
 1.Gnome文件夹
 
-    Ctrl+T：在文件夹中打开新的 Tab          
-    Ctrl+N 新建窗口               
-    Alt+N 切换到第N个标签（N为数字）      
+    Ctrl+T：在文件夹中打开新的 Tab
+    Ctrl+N 新建窗口
+    Alt+N 切换到第N个标签（N为数字）
     Ctrl+W：在文件夹中关闭一个 Tab，如果仅有一个 Tab，则关闭整个文件夹
     Ctrl+H：切换隐藏文件（夹）显示或不显示
     Ctrl+1/2：修改文件夹视图为图标或者列表模式
     Ctrl + Shift + N：创建新文件夹
-    Alt + ↑←/↓→：目录的后退和前进              
+    Alt + ↑←/↓→：目录的后退和前进
     Alt + Enter：显示所选文件或者文件夹的属性信息
-    Alt + Home：直接移到主文件夹       
+    Alt + Home：直接移到主文件夹
     F9：显示和关闭边栏
 注：我已经很久不用图形界面来切换目录和文件了。推荐我常用的工具ranger。
 
@@ -51,7 +51,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     Alt + NUM: 切换到第NUM个标签
     Shift+Ctrl+PageUp: 标签页左移
     Shift+Ctrl+PageDown: 标签页右移
-    Shift+Ctrl+N: 新建窗口（常用）  
+    Shift+Ctrl+N: 新建窗口（常用）
     Shift+Ctrl+Q: 关闭终端
     Shift+Ctrl+c: 复制选中
     Shift+Ctrl+v: 复制
@@ -90,18 +90,32 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     Alt + u 当前字符大小全变为大写
     Alt + . 使用上一条命令的最后一个参数
 
+    Ctrl + Alt + F1：切换到首个虚拟终端
+    Ctrl + Alt + F2(F3)(F4)(F5)(F6)：选择不同的虚拟终端
+    Ctrl + Alt + F7：切换到当前登录会话
+    Ctrl + Alt + L：锁屏
+
+    Ctrl + +: 放大
+    Ctrl + -: 减小
+    Ctrl + 0: 原始大小
+
+    记不住命令操作快捷键怎么办？
+    可以用info readline和bind -p来查看。
+
 3.应用程序
 
     Ctrl+Q：退出当前应用
     Alt+Tab：在不同的应用程序之间切换显示（**最常用**）也用于不同区域直接的切换。当按下Alt+快速按Tab时，会出现多个窗口，供选择。
     Alt+`  ：同一应用程序中多个窗口间切换`
-    Win 长按：显示 Unity 边栏的应用编号，松开 E 再按相应编号即可轻松进行切换  
+    Win 长按：显示 Unity 边栏的应用编号，松开 E 再按相应编号即可轻松进行切换
     Win 快击：打开 Dash 应用程序菜单
     Win+s ：激活工作区切换器。缩小所有工作区。
     Ctrl+Win+d：隐藏所有窗口并显示桌面。再次按下按钮可以恢复窗口。
     Space：激活焦点所在项目，例如按钮、复选框或者列表
     F10：打开窗口菜单栏的第一个项目，然后在下拉菜单中使用方向键上下浏览。
+    Ctrl+Win+↑：最大化窗口。
     Ctrl+Win+↓：将最大化的窗口恢复到初始尺寸。
+    Ctrl+方向键：在列表视图或图标视图中，可以在不改变选中项的情况下将键盘焦点移动到另一个选项。
     Ctrl+Super+↑：最大化窗口。
     Ctrl+Super+←：在屏幕左半边纵向最大化窗口。
     Ctrl+Super+→：在屏幕右半边纵向最大化窗口。
@@ -116,7 +130,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     Alt + F8 改变窗口大小 (注: 在窗口最大化的状态下无效)
     Alt + Space 打开窗口的控制菜单 (点击窗口左上角图标出现的菜单)
     Alt + PrintScreen 当前窗口抓图
-    
+
 ####历史命令
 
     引用命令 : ![!|[?]string|[-]number]
@@ -150,7 +164,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     ^string : 删除上一命令的string
     ^string1^string2 : 执行上一个命令中，用string1代替string2
     ^string1^string2^ : 执行上一个命令中，string1全部用string2代替
-    !:s/old/new : 上一条命令old替换为new 
+    !:s/old/new : 上一条命令old替换为new
     !:gs/old/new :上一条命令old替换为new(全局)
 
     echo $HISTSIZE
@@ -185,6 +199,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
 ####标准输入的控制
 
 * command > filename 把标准输出重定向到一个新文件中
+* command >! filename 把标准输出重定向到一个新文件中（覆盖写）
 * command >> filename 把标准输出重定向到一个文件中(追加)
 * command 1> fielname 把标准输出重定向到一个文件中
 * command > filename 2>&1 把标准输出和标准错误一起重定向到一个文件中
