@@ -49,7 +49,8 @@ cool tools
 * mkdir
 * rmdir
 * rm
-* touch
+* touch  
+* > file
 
 * lsof
 * fuse
@@ -151,6 +152,7 @@ cool tools
 * ss
 * ps
 * netstat
+* netstat –tlnp
 * pstree
 
 磁盘
@@ -209,3 +211,18 @@ gzip bzip2 zip unzip
 * rpm
 * yum
 * pacman
+
+进程
+
+* kill
+* xkill
+* jobs
+* bg
+* fg
+* nohup
+* &
+
+
+其他
+crontab -l
+
