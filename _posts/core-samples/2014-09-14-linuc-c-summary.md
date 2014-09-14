@@ -2,7 +2,7 @@
 layout: post
 category : language
 tagline: "c 语言总结"
-tags : [intro, beginner, jekyll, tutorial]
+tags : [linux, clang]
 ---
 {% include JB/setup %}
 
