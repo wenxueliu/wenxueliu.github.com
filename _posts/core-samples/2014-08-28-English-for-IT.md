@@ -50,3 +50,6 @@ tags : [ English ]
 * obsolete : 废弃，舍弃，通畅用于表示某个接口，比如, nestat is obsolete
 * reentrant : 可重入的. 比如 getaddrinfo is reentrant.
 * trail-and-error process
+* obsolete | deprecate 接口不在使用,废弃
+* drawback 缺陷
+* The fork function is a lively breeding ground for race conditions,
