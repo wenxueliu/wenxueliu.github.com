@@ -19,7 +19,7 @@ cool tools
 
 * env
 * alias  unalias
-* tty 当期终端
+* tty
 * who
 * which
 * locate
@@ -49,7 +49,7 @@ cool tools
 * mkdir
 * rmdir
 * rm
-* touch  
+* touch
 * > file
 
 * lsof
@@ -80,6 +80,7 @@ cool tools
 * tee
 * find
 * grep
+* ack 替代 grep
 * cut
 * tee
 * paste
@@ -130,6 +131,7 @@ cool tools
 * traceroute
 * iptraf
 * dig
+* host
 
 * wireshark
 * air-ng
