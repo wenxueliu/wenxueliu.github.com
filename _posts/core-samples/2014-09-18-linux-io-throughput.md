@@ -1,4 +1,10 @@
-
+---
+layout: post
+category : linux
+tagline: "IO 吞吐量"
+tags : [ linux, io, throughput ]
+---
+{% include JB/setup %}
 
 
 
@@ -45,7 +51,7 @@ you may discovery that
 
 	304 + 162 + 361 + 2 + 5319 + 49357 + 3182 + 40712 + 173  = 120309 > 99619
 	10375 > 10362
-	
+
 what happened ?
 
 There are always a few bytes taken by the partition table. Additionally, there could be blocks marked as bad as well, most HDs have a few bad blocks even when new.
@@ -53,11 +59,9 @@ There are always a few bytes taken by the partition table. Additionally, there c
 
 
 cat /proc/diskstats | grep 'sda'
-8       0 sda 99619 4679 2672276 1452764 42541 73197 5843802 3568956 0 470716 5027124
 
+    8       0 sda 99619 4679 2672276 1452764 42541 73197 5843802 3568956 0 470716 5027124
 
-	
-	
 	1 - major number
 	2 - minor mumber
 	3 - device name
@@ -74,6 +78,7 @@ cat /proc/diskstats | grep 'sda'
 	14 - weighted time spent doing I/Os (ms)
 
 cat /proc/diskstats | grep 'hda1 '
+
 	3 1 hda1 25838 525266 1505217 12041736
 
 	Field 1 -- # of reads issued - Total number of reads issued to this partition.
@@ -81,6 +86,39 @@ cat /proc/diskstats | grep 'hda1 '
 	Field 3 -- # of writes issued - Total number of writes issued to this partition.
 	Field 4 -- # of sectors written - Total number of sectors requested to be written to this partition
 
+###calculate write and read per second
+
+    #! /usr/bin/env bash
+
+    function get_throughput_by_procfs()
+    {
+        disk=$1
+        disk={$disk:="sda"}
+        disk=$disk" "
+        while true; do
+            io_read_begin_bytes=`cat /proc/diskstats | grep $disk | awk '{ print $6 }'`
+            io_write_begin_bytes=`cat /proc/diskstats | grep $disk | awk '{ print $10 }'`
+            sleep 1
+            io_read_end_bytes=`cat /proc/diskstats | grep $disk | awk '{ print $6 }'`
+            io_write_end_bytes=`cat /proc/diskstats | grep $disk | awk '{ print $10 }'`
+            echo `expr $[($io_read_end_bytes - $io_read_begin_bytes) * 512]` `expr $[($io_write_end_bytes - $io_write_begin_bytes) * 512]`
+        done
+    }
+
+    function get_throughput_by_sysfs()
+    {
+        disk=$1
+        disk={$disk:="sda"}
+        disk=$disk" "
+        while true; do
+            io_read_begin_bytes=`cat /sys/block/$disk/stat | awk '{ print $3 }'`
+            io_write_begin_bytes=`cat /sys/block/$disk/stat | awk '{ print $7 }'`
+            sleep 1
+            io_read_end_bytes=`cat /sys/block/$disk/stat | awk '{ print $3 }'`
+            io_write_end_bytes=`cat /sys/block/$disk/stat | awk '{ print $7 }'`
+            echo `expr $[($io_read_end_bytes - $io_read_begin_bytes) / 2]` `expr $[($io_write_end_bytes - $io_write_begin_bytes) / 2]`
+        done
+    }
 
 ###SUFFIX
 
@@ -228,38 +266,38 @@ they should not wrap twice before you notice them.
 Each set of stats only applies to the indicated device; if you want
 system-wide stats you'll have to find all the devices and sum them all up.
 
-Field  1 -- # of reads completed
-    This is the total number of reads completed successfully.
-Field  2 -- # of reads merged, field 6 -- # of writes merged
-    Reads and writes which are adjacent to each other may be merged for
-    efficiency.  Thus two 4K reads may become one 8K read before it is
-    ultimately handed to the disk, and so it will be counted (and queued)
-    as only one I/O.  This field lets you know how often this was done.
-Field  3 -- # of sectors read
-    This is the total number of sectors read successfully.
-Field  4 -- # of milliseconds spent reading
-    This is the total number of milliseconds spent by all reads (as
-    measured from __make_request() to end_that_request_last()).
-Field  5 -- # of writes completed
-    This is the total number of writes completed successfully.
-Field  6 -- # of writes merged
-    See the description of field 2.
-Field  7 -- # of sectors written
-    This is the total number of sectors written successfully.
-Field  8 -- # of milliseconds spent writing
-    This is the total number of milliseconds spent by all writes (as
-    measured from __make_request() to end_that_request_last()).
-Field  9 -- # of I/Os currently in progress
-    The only field that should go to zero. Incremented as requests are
-    given to appropriate struct request_queue and decremented as they finish.
-Field 10 -- # of milliseconds spent doing I/Os
-    This field increases so long as field 9 is nonzero.
-Field 11 -- weighted # of milliseconds spent doing I/Os
-    This field is incremented at each I/O start, I/O completion, I/O
-    merge, or read of these stats by the number of I/Os in progress
-    (field 9) times the number of milliseconds spent doing I/O since the
-    last update of this field.  This can provide an easy measure of both
-    I/O completion time and the backlog that may be accumulating.
+    Field  1 -- # of reads completed
+        This is the total number of reads completed successfully.
+    Field  2 -- # of reads merged, field 6 -- # of writes merged
+        Reads and writes which are adjacent to each other may be merged for
+        efficiency.  Thus two 4K reads may become one 8K read before it is
+        ultimately handed to the disk, and so it will be counted (and queued)
+        as only one I/O.  This field lets you know how often this was done.
+    Field  3 -- # of sectors read
+        This is the total number of sectors read successfully.
+    Field  4 -- # of milliseconds spent reading
+        This is the total number of milliseconds spent by all reads (as
+        measured from __make_request() to end_that_request_last()).
+    Field  5 -- # of writes completed
+        This is the total number of writes completed successfully.
+    Field  6 -- # of writes merged
+        See the description of field 2.
+    Field  7 -- # of sectors written
+        This is the total number of sectors written successfully.
+    Field  8 -- # of milliseconds spent writing
+        This is the total number of milliseconds spent by all writes (as
+        measured from __make_request() to end_that_request_last()).
+    Field  9 -- # of I/Os currently in progress
+        The only field that should go to zero. Incremented as requests are
+        given to appropriate struct request_queue and decremented as they finish.
+    Field 10 -- # of milliseconds spent doing I/Os
+        This field increases so long as field 9 is nonzero.
+    Field 11 -- weighted # of milliseconds spent doing I/Os
+        This field is incremented at each I/O start, I/O completion, I/O
+        merge, or read of these stats by the number of I/Os in progress
+        (field 9) times the number of milliseconds spent doing I/O since the
+        last update of this field.  This can provide an easy measure of both
+        I/O completion time and the backlog that may be accumulating.
 
 
 To avoid introducing performance bottlenecks, no locks are held while

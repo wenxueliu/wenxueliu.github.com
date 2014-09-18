@@ -404,7 +404,10 @@ if you want show privilege data to user which is unprivileged, it is very useful
 
 ###Interpreter Files
 
-read again
+All contemporary UNIX systems support interpreter files. These files are text
+files that begin with a line of the form
+
+    #! pathname [ optional-argument ]
 
 ###system Function
 
@@ -427,3 +430,32 @@ set-group-ID program.
     #include <unistd.h>
     char *getlogin(void);
         Returns: pointer to string giving login name if OK, NULL on error
+
+
+###Process Scheduling
+
+    #include <unistd.h>
+    int nice(int incr);
+        Returns: new nice value − NZERO if OK, −1 on error
+
+The incr argument is added to the nice value of the calling process. If incr is
+too large, the system silently reduces it to the maximum legal value. Similarly,
+if incr is too small, the system silently increases it to the minimum legal
+value. Because −1 is a legal successful return value, we need to clear errno
+before calling nice and check its value if nice returns −1. If the call to nice
+succeeds and the return value is −1, then errno will still be zero. If errno is
+nonzero, it means that the call to nice failed.
+
+    #include <sys/resource.h>
+    int getpriority(int which, id_t who);
+        Returns: nice value between −NZERO and NZERO−1 if OK, −1 on error
+    int setpriority(int which, id_t who, int value);
+        Returns: 0 if OK, −1 on error
+
+###Process Time
+
+    #include <sys/times.h>
+    clock_t times(struct tms *buf );
+        Returns: elapsed wall clock time in clock ticks if OK, −1 on error
+
+
