@@ -164,3 +164,18 @@ Then you can get the information using "bt" command. For detailed backtrace use
 "info locals" to see the local variables. Use "frame frame-number" to go to
 desired frame number. Use "up n" and "down n" commands to select frame n frames
 up and select frame n frames down respectively.To stop gdb use "quit" or "q".
+
+###附录
+
+在Linux下要保证程序崩溃时生成 Coredump要注意这些问题：
+
+要保证存放Coredump的目录存在且进程对该目录有写权限。存放Coredump
+的目录即进程的当前目录，一般就是当初发出命令启动该进程时所在的目录。但如果是通过脚本启动，则脚本可能会修改当前目录，这时进程真正的当前目录就会与当初执行脚本所在目录不同。这时可以查看”/proc/进程pid>/cwd“符号链接的目标来确定进程真正的当前目录地址。通过系统服务启动的进程也可通过这一方法查看。
+
+若程序调用了seteuid()/setegid()改变了进程的有效用户或组，则在默认情况下系统不会为这些进程生成Coredump。很多服务程序都会调用seteuid()，如MySQL，不论你用什么用户运行
+mysqld_safe启动MySQL，mysqld进行的有效用户始终是msyql用户。如果你当初是以用户A运行了某个程序，但在ps里看到的
+这个程序的用户却是B的话，那么这些进程就是调用了seteuid了。为了能够让这些进程生成core
+dump，需要将/proc/sys/fs/suid_dumpable 文件的内容改为1（一般默认是0）。
+
+这个一般都知道，就是要设置足够大的Core文件大小限制了。程序崩溃时生成的
+Core文件大小即为程序运行时占用的内存大小。但程序崩溃时的行为不可按平常时的行为来估计，比如缓冲区溢出等错误可能导致堆栈被破坏，因此经常会出现某个变量的值被修改成乱七八糟的，然后程序用这个大小去申请内存就可能导致程序比平常时多占用很多内存。因此无论程序正常运行时占用的内存多么少，要保证生成Core文件还是将大小限制设为unlimited为好。
