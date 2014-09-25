@@ -458,4 +458,195 @@ nonzero, it means that the call to nice failed.
     clock_t times(struct tms *buf );
         Returns: elapsed wall clock time in clock ticks if OK, −1 on error
 
+###Terminal Logins
 
+####Traditional Authentication Procedure
+
+init invokes getty with an empty environment; getty creates an environment for
+login (the envp argument) with the name of the terminal (something like TERM =
+foo, where the type of terminal foo is taken from the gettytab file) and any
+environment strings that are specified in the gettytab.  The -p flag to login
+tells it to preserve the environment that it is passed and to add to that
+environment, not replace it.
+
+The login program does many things. Since it has our user name, it can call
+getpwnam to fetch our password file entry. Then login calls getpass(3) to
+display the prompt Password: and read our password (with echoing disabled, of
+course).  It calls crypt(3) to encrypt the password that we entered and compares
+the encrypted result to the pw_passwd field from our shadow password file entry
+
+If the login attempt fails :
+
+because of an invalid password (after a few tries), login calls exit with an
+argument of 1. This termination will be noticed by the parent (init), and it
+will do another fork followed by an exec of getty, starting the procedure over
+again for this terminal.
+
+If we log in correctly, login will
+
+* Change to our home directory (chdir)
+* Change the ownership of our terminal device (chown) so we own it
+* Change the access permissions for our terminal device so we have permission to
+read from and write to it
+* Set our group IDs by calling setgid and initgroups
+* Initialize the environment with all the information that login has: our home
+directory (HOME), shell (SHELL), user name (USER and LOGNAME), and a default
+path (PATH)
+* Change to our user ID (setuid) and invoke our login shell, as in
+
+    execl("/bin/sh", "-sh", (char *)0);
+
+<img src="{{ IMAGE_PATH }}/APUE/login.png" alt="login " title="login" />
+
+
+###Network Logins
+
+To allow the same software to process logins over both terminal logins and
+network logins, a software driver called a pseudo terminal is used to emulate
+the behavior of a serial terminal and map terminal operations to network
+operations, and vice versa.
+
+a single process waits for most network connections: the inetd process,
+sometimes called the Internet superserver.
+
+As part of the system start-up, init invokes a shell that executes the shell
+script /etc/rc. One of the daemons that is started by this shell script is
+inetd. Once the shell script terminates, the parent process of inetd becomes
+init; inetd waits for TCP/IP connection requests to arrive at the host. When a
+connection request arrives for it to handle, inetd does a fork and exec of the
+appropriate program.
+
+
+The telnetd process then opens a pseudo terminal device and splits into two
+processes using fork. The parent handles the communication across the network
+connection, and the child does an exec of the login program.The parent and the
+child are connected through the pseudo terminal.  Before doing the exec, the
+child sets up file descriptors 0, 1, and 2 to the pseudo terminal. If we log in
+correctly, login performs the same steps we described in Terminal Login above.
+
+<img src="{{ IMAGE_PATH }}/APUE/network_login.png" alt="network login "
+title="nework login" />
+
+###Process Groups
+
+* process group lifetime
+
+the period of time that begins when the group is created and ends when the last
+remaining process leaves the group.
+
+The last remaining process in the process group can either terminate or enter
+some other process group.
+
+
+        #include <unistd.h>
+        pid_t getpgrp(void);
+                Returns: process group ID of calling process
+        pid_t getpgid(pid_t pid);
+                Returns: process group ID if OK, −1 on error
+        int setpgid(pid_t pid, pid_t pgid);
+                Returns: 0 if OK, −1 on error
+
+A process can set the process group ID of only itself or any of its children.
+Furthermore, it can’t change the process group ID of one of its children after
+that child has called one of the exec functions.
+
+In most job-control shells, this function is called after a fork to have the
+parent set the process group ID of the child, and to have the child set its own
+process group ID.  One of these calls is redundant, but by doing both, we are
+guaranteed that the child is placed into its own process group before either
+process assumes that this has happened.  If we didn’t do this, we would have a
+race condition, since the child’s process group membership would depend on which
+process executes first.
+
+###Session
+
+A session is a collection of one or more process groups.
+
+<img src="{{ IMAGE_PATH }}/APUE/session.png" alt="Session"
+title="Session" />
+
+        #include <unistd.h>
+        pid_t setsid(void);
+            Returns: process group ID if OK, −1 on error
+        pid_t getsid(pid_t pid);
+            Returns:session leader’s process group ID if OK, −1 on error
+
+If the calling process is not a process group leader :
+
+* The process becomes the session leader of this new session. (A session leader is
+the process that creates a session.) The process is the only process in this new
+session.
+
+* The process becomes the process group leader of a new process group. The new
+process group ID is the process ID of the calling process.
+
+* The process has no controlling terminal. (We’ll discuss controlling terminals in
+the next section.) If the process had a controlling terminal before calling setsid,
+that association is broken.
+
+This function returns an error if the caller is already a process group leader.
+To ensure this is not the case, the usual practice is to call fork and have the
+parent terminate and the child continue. We are guaranteed that the child is not
+a process group leader, because the process group ID of the parent is inherited
+by the child, but the child gets a new process ID. Hence, it is impossible for
+the child’s process ID to equal its inherited process group ID.
+
+A session ID that is the process ID of the session leader
+
+
+###Controlling Terminal
+Sessions and process groups have a few other characteristics.
+
+* A session can have a single controlling terminal. This is usually the terminal
+device (in the case of a terminal login) or pseudo terminal device (in the case
+of a network login) on which we log in.
+
+* The session leader that establishes the connection to the controlling terminal
+is called the controlling process.
+
+* The process groups within a session can be divided into a single foreground
+process group and one or more background process groups.
+
+* If a session has a controlling terminal, it has a single foreground process
+group and all other process groups in the session are background process groups.
+
+* Whenever we press the terminal’s interrupt key (often DELETE or Control-C),
+the interrupt signal is sent to all processes in the foreground process group.
+
+* Whenever we press the terminal’s quit key (often Control-backslash), the quit
+signal is sent to all processes in the foreground process group.
+
+* If a modem (or network) disconnect is detected by the terminal interface, the
+hang-up signal is sent to the controlling process (the session leader).
+
+
+<img src="{{ IMAGE_PATH }}/APUE/session_character.png" alt="Session character"
+title="Session character" />
+
+There are times when a program wants to talk to the controlling terminal,
+regardless of whether the standard input or standard output is redirected. The
+way a program guarantees that it is talking to the controlling terminal is to
+open the file /dev/tty.  This special file is a synonym within the kernel for
+the controlling terminal.  Naturally, if the program doesn’t have a controlling
+terminal, the open of this device will fail.
+
+###tcgetpgrp, tcsetpgrp, and tcgetsid Functions
+
+        #include <unistd.h>
+        pid_t tcgetpgrp(int fd);
+                Returns: process group ID of foreground process group if OK, −1 on error
+        int tcsetpgrp(int fd, pid_t pgrpid);
+                Returns: 0 if OK, −1 on error
+
+        #include <termios.h>
+        pid_t tcgetsid(int fd);
+                Returns: session leader’s process group ID if OK, −1 on error
+
+###Job control
+
+three forms of support:
+    1. A shell that supports job control
+    2. The terminal driver in the kernel must support job control
+    3. The kernel must support certain job-control signals
+
+standard input and standard ouput control
