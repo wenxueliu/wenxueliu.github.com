@@ -630,6 +630,13 @@ open the file /dev/tty.  This special file is a synonym within the kernel for
 the controlling terminal.  Naturally, if the program doesn’t have a controlling
 terminal, the open of this device will fail.
 
+* relation among process, group process, session and control termina
+
+A process belongs to a process group, and the process group belongs to a
+session. The session may or may not have a controlling terminal.
+
+    ps -o pid,ppid,pgid,sid,comm | cat1
+
 ###tcgetpgrp, tcsetpgrp, and tcgetsid Functions
 
         #include <unistd.h>
@@ -650,3 +657,19 @@ three forms of support:
     3. The kernel must support certain job-control signals
 
 standard input and standard ouput control
+
+###Orphaned Process Groups
+an orphaned process group is one in which the parent of every member is either
+itself a member of the group or is not a member of the group’s session.
+
+Another way of saying this is that the process group is not orphaned as long as
+a process in the group has a parent in a different process group but in the same
+session.
+
+If the process group is not orphaned, there is a chance that one of those
+parents in a different process group but in the same session will restart a
+stopped process in the process group that is not orphaned.
+
+<img src="{{ IMAGE_PATH }}/APUE/process-raliation.png" alt="process relation" 
+title="process terminated" />
+
