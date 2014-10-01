@@ -8,12 +8,16 @@ tags : [linux, tools]
 
 cool tools
 
+* vagrant
+* docker
+* ranger
 * tmux
 * screen
-* ranger
-* docker
-* vagrant
+* watch
 * mplayer
+* jq
+* mdp
+* gunplot
 
 查询
 
@@ -61,6 +65,11 @@ cool tools
 * sync 缓冲区内容写入磁盘
 * df
 * dd
+* tr
+* flock
+
+
+* md5sum
 
 系统配置
 
@@ -68,6 +77,8 @@ cool tools
 * nice
 * renice
 * ulimit
+* service
+* chkconfig
 
 文本分析工具
 
@@ -87,6 +98,7 @@ cool tools
 * od
 * du
 * expect
+* split
 
 远程登陆与执行
 
@@ -145,6 +157,9 @@ cool tools
 性能
 
 * vmstat
+* mpstat
+* iostat
+* pidstat
 * htop
 * top
 * /proc/stat
@@ -169,6 +184,8 @@ cool tools
 * mount -a -l
 * umount
 * chroot
+* tune2fs
+* blktrace
 
 版本管理
 
@@ -223,8 +240,15 @@ gzip bzip2 zip unzip
 * fg
 * nohup
 * &
+* pgrep
+* pkill
+* fuser
+* trap
 
 
 其他
 crontab -l
 
+http://man.linuxde.net/
+http://linux.51yip.com/
+http://blog.51yip.com/manual/shell/index.html
