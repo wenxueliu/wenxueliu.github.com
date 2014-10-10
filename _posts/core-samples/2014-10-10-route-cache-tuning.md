@@ -1,0 +1,391 @@
+
+Clone From [Here](http://vincent.bernat.im/en/blog/2011-ipv4-route-cache-linux.html)
+
+
+The route cache is a Linux kernel component enabling route lookups to be faster
+by caching the results in some table and checking it before issuing a regular
+lookup in the route tables. When using Linux as a router, the inefficiency of
+the route cache can hinder the performances of your box.
+
+The documentation on this component is scarce and it is difficult to find
+up-to-date bits on how the route cache works and how to tune it. The book
+[Understanding Linux Network Internals](http://shop.oreilly.com/product/9780596002558.do)
+from O’Reilly is an exception and contains valuable information on how the route
+cache works. Even if the book is targeted at 2.6.12, the part on the route cache
+is still quite accurate. Unfortunately, it fails to provide appropriate tips on
+how to monitor and tune the route cache.
+
+I hope to provide here a concise view of the route cache, as it is implemented
+in Linux 3.1[1]. It is protocol-dependent[2] and I will cover only the IPv4 version
+here.
+
+###Overview of the route cache subsystem
+
+To handle an incoming or outgoing IP datagram, the kernel needs to issue a
+lookup in the route tables. While it seems to be quite trivial, several
+questions need to be answered:
+
+* Does the source address and the destination address appear to be valid?
+* Is the source address a martian address[3]?
+* Is the destination address mine or should I forward the packet?
+* Which route table should I use?
+* Does the destination address match this route? And this one?
+* Can I currently contact the gateway that I should use?
+
+Those checks can be a bit time consuming, even for small route tables. To avoid
+them for each packets, Linux maintains a route cache which is queried before
+doing a regular lookup and updated after each one. You can dump it with:
+
+		$ ip -s route show cache
+		198.51.100.7 from 203.0.113.2 via 192.0.2.1 dev eth1
+		  cache used 7 age 2sec ipid 0x1fce rtt 131ms rttvar 45ms cwnd 10
+		198.51.100.17 from 203.0.113.15 via 192.0.2.1 dev eth1
+		  cache used 3 age 0sec ipid 0xc3bd
+		local 192.0.2.18 from 203.0.113.15 dev lo src 192.0.2.18
+		  cache <local> used 154 age 1sec iif eth0
+
+Here are two examples:
+
+* If Linux receives a packet from `203.0.113.15` to `198.51.100.17`, it will find
+this flow in the route cache. Therefore, it already knows that it should
+forward the packet to 192.0.2.1. No checks needed.
+
+* If it receives a packet from from `203.0.113.16` to `198.51.100.17`, there is no
+ appropriate entry in the route cache and therefore, the system will have to
+ look at the route tables. It is likely to use the exact same entry than if the
+ source was 203.0.113.15 but maybe there is some policy routing requesting the
+ use of a special route table or 203.0.113.16 is a local address and the packet
+ will therefore be classified as martian.
+
+The schema below shows how this cache is implemented[4],It uses a separate [hash
+table](http://en.wikipedia.org/wiki/Hash_table) (BSD systems keep the cache in
+the routing table). Each bucket is a chained list of route cache entries.
+
+![route-cache]({{ IMAGE_PATH }}/router/routing-cache.png)
+
+Once an entry has been added to the route cache, there are several ways to
+remove it. Most entries are removed by the [garbage collector] [gc] which will
+scan the route cache and remove invalid and older entries. It will be triggered
+when the route cache is full or at regular interval, once a certain threshold 
+has been met.
+
+###vailable knobs
+
+There are several values you can tune. Most of them are available in `sysctl`.
+
+`rhash_entries` is the size of the hash table[5]. If you don’t specify it on the
+kernel command line, it is computed dynamically based on the memory available on
+your system. You can view its value by looking at something like IP route cache
+hash table entries: 262144 (order: 9, 2097152 bytes) in the kernel logs.
+
+`net.ipv4.route.max_size` is the maximum number of entries in the route cache.
+Except under exceptional circumstances, this value is never exceeded.
+
+`net.ipv4.route.gc_elasticity` is the target average length of a chain in the
+route cache. The garbage collector will work harder if this value is exceeded.
+This means that if you multiply this value by the value of `rhash_entries`, you
+will get the target average number of entries in the route cache.
+
+`net.ipv4.route.gc_min_interval_ms` is the minimum delay between two runs of the
+garbage collector, except when the cache is full. The default value should be
+fine.
+
+`net.ipv4.route.gc_thresh` is a threshold triggering the garbage collector every
+`net.ipv4.route.gc_min_interval_ms` milliseconds.
+
+`net.ipv4.route.gc_timeout` is the base value to determine if an entry is old
+enough to be removed or not. Whatever its value, the garbage collector will
+attempt to remove the same number of entries. However, this value could
+potentially influence its efficiency. See below for more details on this.
+
+You may find documentation about those obsolete sysctl values:
+
+`net.ipv4.route.secret_interval` has been [removed in Linux 2.6.35] [remove1] it was used to
+trigger an asynchronous flush at fixed interval to avoid to fill the cache.
+
+`net.ipv4.route.gc_interval` has been [removed in Linux 2.6.38] [remove2]. It is still present
+until Linux 3.2 but has no effect. It was used to trigger an asynchronous
+cleanup of the route cache. The garbage collector is now considered efficient
+enough for the job.
+
+UPDATED: `net.ipv4.route.gc_interval` is [back for Linux 3.2] [back]. It is still needed to
+avoid exhausting the neighbour cache because it allows to cleanup the cache
+periodically and not only above a given threshold. Keep it to its default value
+of 60.
+
+
+###Statistics & monitoring
+
+Linux maintains some statistics about the use of the route cache. You can find
+them in /proc/net/stat/rt_cache. The command lnstat can print them nicely for
+you:
+
+$ lnstat -s1 -i1 -c-1 -f rt_cache
+rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|rt_cache|
+ entries|  in_hit|in_slow_|in_slow_|in_no_ro|  in_brd|in_marti|in_marti| out_hit|out_slow|out_slow|gc_total|gc_ignor|gc_goal_|gc_dst_o|in_hlist|out_hlis|
+        |        |     tot|      mc|     ute|        |  an_dst|  an_src|        |    _tot|     _mc|        |      ed|    miss| verflow| _search|t_search|
+ 3096848|   42309|     686|       0|       0|       0|       0|       0|       3|       0|       0|     674|     672|       0|       0|   27644|       8|
+ 3096984|   41405|     636|       0|       0|       0|       0|       0|       3|       0|       0|     623|     621|       0|       0|   28189|       8|
+ 3097160|   42483|     700|       0|       0|       0|       0|       0|       5|       0|       0|     694|     692|       0|       0|   29506|      12|
+
+
+Except for the first column, lnstat outputs values in units per second. Let’s
+review some of those values:
+
+    `rt_cache_entries` is the number of entries in the route cache. You should
+    compare it with `net.ipv4.route.max_size` and ensure that the cache is never
+    full to avoid triggering the garbage collector too often.
+
+    `rt_cache_in_hit` and `rt_cache_out_hit` are the number of regular lookups
+    avoided because the result was found in the cache for incoming and outgoing
+    packets, respectively. When the system is a router, most lookups only happen
+    on the incoming side. You should compare this value with
+    `rt_cache_in_slow_tot` and `rt_cache_in_out_slow_tot` which are the number of
+    lookups in the route tables. On this system, the efficiency of the route
+    cache is more than 98% which is quite good.
+
+    `rt_cache_gc_total` is how often the garbage collector was requested to be
+    triggered while `rt_cache_gc_ignored` corresponds to how often it was finally
+    not run because it has already been triggered shortly beforehand (less than
+    `net.ipv4.route.gc_min_interval_ms` milliseconds). The difference
+    between those two values should be very small to ensure that the garbage
+    collector does not run more a handful of times per second.
+
+    `rt_cache_gc_goal_miss` is how often the garbage collector was not able to
+    fulfill its goal. This value should rarely be different of 0.
+
+    `rt_cache_gc_dst_overflow` is how often the route cache is bigger than the
+    allowed maximum size. This should never happen except when you try to shrink
+    the cache.
+
+    `rt_cache_in_hlist_search` and `rt_cache_out_hlist_search` is how often a lookup
+    in the cache had to look at the next entry in the chain for the computed
+    bucket: each time Linux has to follow the next pointer in a cache entry, it
+    increments one of those counters. It is a clue on the average length of
+    chains in the route cache hash table. Compare those values with the number
+    of cache lookups (hit and miss).
+
+
+As an illustration, here is a plot of the various statistics exposed above for a
+router whose route cache receives about 1000 routes par second:
+
+![route-cache-stats]({{ IMAGE_PATH }}/router/routing-cache-stats.png)
+
+`rhash_entries` is 1,048,576, as is `net.ipv4.route.gc_thresh`. Therefore, the
+garbage collector was requested to be run when the number of entries goes above
+this level. Because the cache is not full, it is only really run twice per
+seconds (the value of `net.ipv4.route.gc_interval_ms` is 500).
+`net.ipv4.route.gc_elasticity` is set to 3. This explains why the garbage
+collector is aggressive when the number of entries reached 3,145,728.
+
+UPDATED: The plot above was with a 2.6.39 kernel. For a kernel between 2.6.35
+and 2.6.37 (included) or a 3.2 kernel or more recent, the cleanup triggered
+every `net.ipv4.route.gc_interval` seconds will expire up to rhash_entries
+entries. If the pace at which routes are added to the cache is less than this
+rate, the number of entries may stop climbing, even when
+`net.ipv4.route.gc_threshold` is not met. For example, here are the same
+statistics with a 2.6.35 kernel for a router with about 2,500 new entries per
+second but with `net.ipv4.route.gc_interval` enabled; the threshold of 1,048,576
+is never met:
+
+![route-cache-stats]({{ IMAGE_PATH }}/router/routing-cache-gc-interval.png)
+
+###Tuning
+
+Do you need to modify any of those values? You have two questions to ask
+yourself:
+
+* How much efficiency do you want to get from the route cache?
+* How much memory do you want to dedicate to the route cache?
+
+As a rule of thumb, two millions entries eat about 500 MB of memory on a 64bit
+system. You should be able to compute the average memory usage and the maximum
+memory usage from the values of `net.ipv4.route.max_size`, `rhash_entries` and
+`net.ipv4.route.gc_elasticity`. For example, if the route cache hash table has
+262,144 buckets, the maximum allowed number of entries in the cache is 4,194,304
+and `net.ipv4.route.gc_elasticity` is set to 8, the memory usage will be 500 MB on
+average and 1 GB max. If this is too much, you will need to lower some values.
+
+Look at the previous section to compute the current efficiency of your route
+cache. It should be above 90%. If you are dissatisfied with that, you could
+increase the cache size.
+
+If you want to double the number of entries, double `net.ipv4.route.max_size`,
+`net.ipv4.route.gc_thresh` and `rhash_entries` but keep `net.ipv4.route.gc_elasticity`
+to 8.
+
+For the garbage collector to be efficient, the route cache should not be filled
+too fast. The garbage collector should be able to cope with this situation but
+this may impact performance because it needs to walk several times the route
+cache to find entries to expire. Watching gc_goal_miss may give you a hint about
+this: if this value starts to be different of 0, lower `net.ipv4.route.gc_timeout`.
+
+UPDATED: For a kernel where `net.ipv4.route.gc_interval` matters, things become
+more complicated. Because the cleanup algorithm will expire entries at a regular
+interval, the average number of entries may stay low unless the number of new
+entries per second is high enough. Therefore, the average number of entries may
+be lower than the theoretical value computed above. Monitoring the appropriate
+metrics is the key to a good tuning. If you feel that entries are expired too
+fast, you may want to double `net.ipv4.route.gc_timeout`.
+
+###In-depth look into the garbage collector
+
+Those different pieces of advice may have puzzled you. We need to understand how
+the garbage collector works to better cope with them. The garbage collector is
+triggered when a new entry needs to be added to the cache and the number of
+entries is superior to `net.ipv4.route.gc_thresh`. It is implemented in
+rt_garbage_collect() function. It will do nothing if it has been called less
+than `net.ipv4.route.gc_interval_ms` milliseconds and the cache is not full (more
+than net.ipv4.route.max_size entries).
+
+###Setting a goal
+
+The garbage collector will first assess the situation. It will look how the
+number of entries currently in the cache compares to the product of
+`rhash_entries` and `net.ipv4.route.gc_elasticity`:
+
+* Above this limit, it will try to remove at least rhash_entries entries.
+* Otherwise, it will try to remove no more than half the difference.
+
+If you look at the previous plot, you can easily see the difference when the
+garbage collector is not aggressive (above 1,048,576 entries but below
+3,145,728) and when it is (above 3,145,728 entries). If we assume the
+garbage collector is able to meet its goal, we can easily [simulate its
+algorithm][https://gist.github.com/1460108]:
+
+![route-cache-exp]({{ IMAGE_PATH }}/router/routing-cache-exp.png)
+
+The first plot shows what would happen if about 2000 routes are added per second
+with `rhash_entries` equal to 262,144 and `net.ipv4.route.gc_elasticity` set to 8.
+When `net.ipv4.route.gc_threshold` is met, the garbage collector has almost no
+effect. However, when the number of entries reaches 2,097,152, the garbage
+collector sets its goal to 262,144. From this point, the number of entries
+oscillates around 2 millions entries.
+
+On the second plot, rhash_entries is now equal to 1,048,576 but
+`net.ipv4.route.gc_elasticity` has been set to 2. Therefore, the aggressive part
+of the garbage collectors kicks at the same threshold than for the previous
+plot. However, its goal is now four times larger and the oscillations have a
+larger amplitude. The fact that the aggressive part of the garbage collector
+kicks less often is nullified by the fact that it needs to remove more entries
+each time. Because of the slight impact on cache efficiency, it seems better to
+keep `net.ipv4.route.gc_elasticity` around 8, or 4 if we want to keep shorter
+chains (but there seems to be no improvement to do so).
+
+The other plots show what happens when there is a sudden surge in the number of
+routes added or when there is a pause.
+
+###Meeting the goal
+
+Now that we understand how `rhash_entries`, `net.ipv4.route.gc_elasticity` and
+`net.ipv4.route.gc_threshold` interact, let’s look at net.ipv4.route.gc_timeout.
+Once the garbage collector has set its goal and if it is positive, it needs to
+choose which entries to remove from the cache.
+
+It walks the hash table from the position of its last run and remove entries
+until its goal is met. If the entry is not current anymore (for example, the
+network interface associated to it has changed its IP configuration), it
+is removed. Otherwise, the system looks at the age of the entry and its position
+in the chain. If the entry is the first in the chain, it is kept only if its age
+is below `net.ipv4.route.gc_timeout`. If it is second, it is kept only if its age
+is below half of `net.ipv4.route.gc_timeout`. If it is third, the threshold is a
+quarter of `net.ipv4.route.gc_timeout`, and so on. The garbage collector will
+favor short chains.
+
+If after a full run of the hash table, the garbage collector was not able to
+meet its goal, it will start again but will behave more aggressively, as if
+`net.ipv4.route.gc_timeout` is set to half of its value. It will do as many passes
+as necessary until its goal is met or until there is no way to remove any entry
+(or until it has spent too much time). Once the garbage collector has switched
+to this more aggressive behavior, it will keep being aggressive for a few cycles
+(a bit less for each cycle).
+
+With a very large value of `net.ipv4.route.gc_timeout`, the garbage collector will
+have a hard time to find entries to expire. It will need to do several passes
+until it is able to expire some entries. On the other hand, if you choose a very
+small value, the garbage collector may remove entries that were just added, even
+if there are older entries further in the hash table.
+
+For a more in-depth coverage of how the route cache works, look at chapter 33 of
+Understanding Linux Network Internals. Just be aware that multipath route
+caching has been removed (and was never really used) and asynchronous cleanup
+(`rt_periodic_timer`) does not exist anymore.
+
+UPDATED: As stated earlier, `net.ipv4.route.gc_interval` has been [reinstantiated
+in Linux 3.2] [linux-3-2]. The cleanup is a bit different of what is done by the 
+garbage collector but have some similarities. It is run every net.ipv4.route.gc_interval`
+seconds (even when there is less than `net.ipv4.route.gc_threshold` entries). It
+will set a goal proportional to `net.ipv4.route.gc_interval` and inversely
+proportional to `net.ipv4.route.gc_timeout`. It cannot be greater than
+`rhash_entries`. If `net.ipv4.route.gc_interval` and `net.ipv4.route.gc_timeout` are
+equal, the goal is exactly rhash_entries. It represents the number of entries
+the cleanup procedure will look at (and not the number of entries it will try to
+        expire). If an entry is not valid anymore or is old enough to be removed
+(with the same criteria as for the garbage collector), it will be removed.
+Another important thing about this cleanup algorithm is that it will modify the
+maximum allowed length of a chain to the average length it has observed plus
+four times the standard deviation with a maximum equal to
+`net.ipv4.route.gc_elasticity`. Without this algorithm, the maximum allowed length
+is 20. When inserting a new entry, if a chain with more than
+`net.ipv4.route.gc_elasticity` entries is selected, the kernel will try to remove
+an element before inserting a new one. Then, if the chain is still longer than
+the maximum allowed length (longer than what is allowed by `net.ipv4.route.gc_elasticity` 
+or too long compared to other chains[6]), all cache entries for the current interface are 
+invalidated.
+
+###Conclusion
+
+When tuning the route cache, `rhash_entries`, `net.ipv4.route.gc_elasticity`,
+`net.ipv4.route.max_size` and `net.ipv4.route.gc_threshold` are related and should
+not be modified independently. `net.ipv4.route.gc_thresh` should be below the
+product of `net.ipv4.route.gc_elasticity` and `rhash_entries` while
+`net.ipv4.route.max_size` should be above this value.
+
+Linux exposes several interesting metrics related to the route cache. Monitoring
+them allows one to watch the efficiency of the route cache and may uncover some
+anomalies (garbage collector running too often, difficulty to remove routes from
+the cache, …).
+
+The route cache subsystem still evolves and some old behaviors have been
+dismissed. The best documentation is, unfortunately, still the code and other
+documentations tend to become obsolete. The IPv6 route cache is quite different
+of the one presented here. Don’t blindly apply the same tuning for IPv6.
+
+
+[1]: The content of this article should be valid for Linux 2.6.38, 2.6.39, 3.0
+and 3.1. There are some clues for Linux 2.6.35, 2.6.36 and 2.6.37 as well as for
+Linux 3.2, 3.3, 3.4 and 3.5. Starting from Linux 3.6, the whole [route cache has
+been removed] [remove3].
+
+[2]: Linux provides a protocol-independent destination cache subsystem (DST).
+This component is not a generic cache layer and only enables loose coupling with
+external subsystems. 
+
+[3]: Martian addresses are addresses that cannot be used as a source address,
+either because they are reserved for special-use (like a multicast address) or
+because of the use of reverse path filtering which checks if a packet received
+on one interface would be answered on the same interface, as defined in [RFC
+3704] [rfc3704]. This feature is enabled by setting rp_filter in Linux.
+
+[4]: For more details, you may want to look at include/net/dst.h,
+include/net/route.h and net/ipv4/route.c
+
+[5]: In fact, the size of the hash table is always a power of two. If specified,
+rhash_entries is rounded to the next power of two and, internally, is stored as
+rt_hash_mask + 1
+
+[6]: This allows the kernel to guard against collision attacks.
+
+[gc]: http://en.wikipedia.org/wiki/Garbage_collection_(computer_science)
+
+[remove1]: https://github.com/torvalds/linux/commit/3ee943728fff536edaf8f59faa58aaa1aa7366e3
+
+[remove2]: https://github.com/torvalds/linux/commit/349d2895cc8b7db1f5be677cd685209a3805d2ed
+
+[back]: https://github.com/torvalds/linux/commit/9f28a2fc0bd77511f649c0a788c7bf9a5fd04edb
+
+[Linux-3-2]: https://github.com/torvalds/linux/commit/9f28a2fc0bd77511f649c0a788c7bf9a5fd04edb
+
+[remove3]: http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=commitdiff;h=89aef8921bfbac22f00e04f8450f6e447db13e42
+
+[rfc3704]: http://tools.ietf.org/html/rfc3704
