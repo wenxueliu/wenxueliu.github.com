@@ -31,18 +31,97 @@ If you are trying to optimize for a single flow, see the [tuning advice for test
 hosts](http://fasterdata.es.net/host-tuning/linux/test-measurement-host-tuning/)
 page.
 
+###Background Information
+
+####TCP Buffer Sizing
+
+TCP uses what is called the "congestion window", or CWND, to determine how many
+packets can be sent at one time. The larger the congestion window size, the
+higher the throughput. The TCP "slow start" and "congestion avoidance"
+algorithms determine the size of the congestion window. The maximum congestion
+window is related to the amount of buffer space that the kernel allocates for
+each socket. For each socket, there is a default value for the buffer size,
+which can be changed by the program using a system library call just before
+opening the socket. There is also a kernel enforced maximum buffer size. The
+buffer size can be adjusted for both the send and receive ends of the socket.
+
+To get maximal throughput it is critical to use optimal TCP send and receive
+socket buffer sizes for the link you are using. If the buffers are too small,
+the TCP congestion window will never fully open up. If the receiver buffers are
+too large, TCP flow control breaks and the sender can overrun the receiver,
+which will cause the TCP window to shut down. This is likely to happen if the
+sending host is faster than the receiving host. Overly large windows on the
+sending side is not usually a problem as long as you have excess memory; note
+that every TCP socket has the potential to request this amount of memory even
+for short connections, making it easy to exhaust system resources.
+
+The optimal buffer size is twice the bandwidth*delay product of the link:
+
+    buffer size = 2 * bandwidth * delay
+
+The ping program can be used to get the delay. Determining the end-to-end
+capacity (the bandwidth of the slowest hop in your path) is trickier, and may
+require you to ask around to find out the capacity of various networks in the
+path. Since ping gives the round trip time (RTT), this formula can be used
+instead of the previous one:
+
+    buffer size = bandwidth * RTT
+
+For example, if your ping time is 50 ms, and the end-to-end network consists of
+all 1G or 10G Ethernet, the TCP buffers should be:
+
+    .05 sec * (1 Gbit / 8 bits) = 6.25 MBytes.
+
+Historically in order get full bandwidth required the the user to specify the
+buffer size for the network path being used, and the the application programmer
+had to set use the SO_SNDBUF and SO_RCVBUF options of the BSD setsockopt() call
+to set the buffer size for the sender an receiver. Luckily Linux, FreeBSD,
+Windows, and Mac OSX all now support TCP autotuning, so you no longer need to
+worry about setting the default buffer sizes.
+
+More details on TCP buffer sizing can be found in my
+[LAMP article](http://www.onlamp.com/pub/a/onlamp/2005/11/17/tcp_tuning.html) and
+in the [PSC TCP Tuning Guide](http://www.psc.edu/index.php/networking/641-tcp-tune).
+
+####TCP Autotuning
+
+Beginning with Linux 2.6, Mac OSX 10.5, Windows Vista, and FreeBSD 7.0, both
+sender and receiver autotuning became available, eliminating the need to set the
+TCP send and receive buffers by hand for each path. However the maximum buffer
+sizes are still too small for many high-speed network path, and must be
+increased as described on the pages for each operating system.
+
+####TCP Autotuning Maximum
+
+Adjusting the default maximum Linux TCP buffer sizes allows the autotuning
+algorithms the ability to scale the sending and receiving window to take
+advantage of available bandwidth on long paths.  Each operating system reacts
+to this setting differently, please see operating system specific resources on
+recommendations.
+
+The following graph illustrates the impact of adjusting this value on two Linux
+servers that are separated by a 75ms round trip path.  The value was adjusted
+from 32MB to 64MB, and resulted in a throughput improvement of nearly 2 times.
+
+![resize_tcp_bufsize]({{ IMAGE_PATH }}/network/resize_tcp_bufsize.png)
+
+ESnet recommends sensible defaults for this value, of between 32M and 128M.  An
+expectation of 10Gbps, single stream, across a path of 100ms, will require a
+120MB buffer, baring any network loss.  Hosts that have an expectation of faster
+speeds or longer distanes will need more.  Those intending to use parallel
+streams should use less to avoid memory exhaustion. 
 
 ###General Approach
 
-To check what setting your system is using, use 'sysctl name' (e.g.: 
+To check what setting your system is using, use 'sysctl name' (e.g.:
 'sysctl net.ipv4.tcp_rmem'). To change a setting use 'sysctl -w'. To make the
 setting permanent add the setting to the file 'sysctl.conf'.
 
 The following are important for TCP performance, and the default values of 1 are  fine:
 
-    net.ipv4.tcp_window_scaling
-    net.ipv4.tcp_timestamps
-    net.ipv4.tcp_sack
+    [net.ipv4.tcp_window_scaling](http://en.wikipedia.org/wiki/TCP_window_scale_option)
+    [net.ipv4.tcp_timestamps](http://freesoft.org/CIE/RFC/1323/7.htm)
+    [net.ipv4.tcp_sack](http://www.opalsoft.net/qos/TCP-90.htm)
 
 Notes:
 
@@ -61,9 +140,6 @@ Notes:
     kernel, but on standard i386 computers, this is 4 kilobyte or 4096 bytes. So
     the defaults values are fine for most cases.
 
-For more information on TCP variables see:
-
-    http://www.frozentux.net/ipsysctl-tutorial/ipsysctl-tutorial.html#TCPVARIABLES
 
 
 ###TCP tuning
@@ -114,10 +190,10 @@ Notes:
     that makes any difference.
 
 Starting in Linux 2.6.7 (and back-ported to 2.4.27), Linux includes alternative
-congestion control algorithms beside the traditional 'reno' algorithm. These are
-designed to recover quickly from packet loss on high-speed WANs. Starting with
-version 2.6.13, Linux supports pluggable
-[congestion control algorithms](http://fasterdata.es.net/host-tuning/background/#t1). 
+[congestion control algorithms](http://fasterdata.es.net/host-tuning/background/)
+beside the traditional 'reno' algorithm. These are designed to recover quickly
+from packet loss on high-speed WANs. Starting with version 2.6.13, Linux supports pluggable
+[congestion control algorithms](http://fasterdata.es.net/host-tuning/background/#t1).
 The congestion control algorithm used is set using the sysctl variable
 net.ipv4.tcp_congestion_control, which is set to bic/cubic or reno by default,
 depending on which version of the 2.6 kernel you are using.
@@ -127,7 +203,8 @@ To get a list of congestion control algorithms that are available in your kernel
 
 		sysctl net.ipv4.tcp_available_congestion_control
 
-The choice of congestion control options is selected when you build the kernel.
+The choice of [congestion control options](http://en.wikipedia.org/wiki/TCP_congestion_avoidance_algorithm)
+is selected when you build the kernel.
 The following are some of the options are available in the 2.6.23 kernel:
 
     reno: Traditional TCP used by almost all other OSes. (default)
@@ -183,8 +260,9 @@ limits your total throughput. Another solution is to disable SACK. This appears
 to have been fixed in version 2.6.26.
 
 
-Also, I've been told that for some network paths, using the Linux 'tc' (traffic
-control) system to pace traffic out of the host can help improve total
+Also, I've been told that for some network paths, using the Linux
+'[tc](http://tldp.org/HOWTO/Traffic-Control-HOWTO/intro.html#i-assumptions)'
+(traffic control) system to pace traffic out of the host can help improve total
 throughput.
 
 
@@ -199,5 +277,29 @@ This can be added to /etc/rc.local to be run at boot time:
 
 Note that this might have adverse affects for a 10G host sending to a 1G host or slower.
 
-We also note that we have seen about a 30% performance hit using VLANS with Linux with some hosts/NICS, as it can break the hardware offload capabilities. Myricom mentions this [here](https://www.myricom.com/software/myri10ge/347-what-is-the-performance-impact-of-vlan-tagging-with-the-myri10ge-driver.html).
+We also note that we have seen about a 30% performance hit using VLANS with
+Linux with some hosts/NICS, as it can break the hardware offload capabilities.
+Myricom mentions this
+[here](https://www.myricom.com/software/myri10ge/347-what-is-the-performance-impact-of-vlan-tagging-with-the-myri10ge-driver.html).
 
+For more information on [TCP variables](http://www.frozentux.net/ipsysctl-tutorial/ipsysctl-tutorial.html#TCPVARIABLES)
+
+###Reference
+
+[rfc1323](http://freesoft.org/CIE/RFC/1323/index.htm)
+
+[Tcp Tuning](http://fasterdata.es.net/host-tuning/linux/)
+
+[Tcp Tuning: Expert Guide](http://fasterdata.es.net/host-tuning/linux/expert/)
+
+[Tcp Background](http://fasterdata.es.net/host-tuning/background/)
+
+[ip-sysctl](http://www.mjmwired.net/kernel/Documentation/networking/ip-sysctl.txt)
+
+[cubic congestion algorithm](http://www.csc.ncsu.edu/faculty/rhee/export/bitcp/cubic-paper.pdf)
+
+[bic congestion algorithm](http://research.csc.ncsu.edu/netsrv/?q=content/bic-and-cubic)
+
+[htcp congestion algorithm](http://www.hamilton.ie/net/htcp.htm)
+
+[vegas congestion algorithm](http://www.cs.arizona.edu/projects/protocols/)
