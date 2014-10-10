@@ -23,7 +23,40 @@ occurs, do the following."random times to the process.
 
 * Ignore the signal. SIGKILL and SIGSTOP can never be ignored. hardware
 exception is undefined.
-
 * Catch the signal. SIGKILL and SIGSTOP can’t be caught.
 * Let the default action apply. default action for most signals is to terminate
 the process.
+
+
+###Core File
+The core file will not be generated
+* the process was set-user-ID and the current user is not the owner of the program file
+* the process was set-group-ID and the current user is not the group owner of the file
+* the user does not have permission to write in the current working directory
+* the file already exists and the user does not have permission to write to it
+* the file is too big
+
+SIGABRT  abort
+SIGALRM  alarm  setitimer
+SIGCHLD  child process terminates or stops, send to parent process
+SIGCONT  job-control signal
+SIGBUS   hardware error
+SIGEMT   hardware error
+SIGFPE   divide by 0, floating-point overflow
+SIGIOT   implementation-defined hardware fault.
+SIGILL   an illegal hardware instruction
+SIGINT   Control-C
+SIGIO    an asynchronous shiaf?/* event
+SIGIOT   Hardware fault
+SIGPIPE  write to a pipeline but the reader has terminated
+SIGPOLL  It can be generated when a specific event occurs on a pollable device.
+SIGPROF  setitimer
+SIGQUIT  Control-backslash
+SIGSTOP  job-control signal stops a process,cannot be caught or ignored
+SIGSYS   an invalid system call.
+SIGTERM  kill
+
+
+
+
+
