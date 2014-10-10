@@ -284,6 +284,12 @@ Myricom mentions this
 
 For more information on [TCP variables](http://www.frozentux.net/ipsysctl-tutorial/ipsysctl-tutorial.html#TCPVARIABLES)
 
+###VM Network Tuning
+
+To get the best network performance on a Linux VM running on a native Linux
+host, increase txqueuelen in host OS, and set all other tuning parameters in the
+guest OS.
+
 ###Reference
 
 [rfc1323](http://freesoft.org/CIE/RFC/1323/index.htm)
