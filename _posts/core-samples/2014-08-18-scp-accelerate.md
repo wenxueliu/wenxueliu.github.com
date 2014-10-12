@@ -18,31 +18,31 @@ tags : [tools, linux]
 ####磁盘读取和落盘
 
 	dd if=./sendlog.tar of=/dev/null bs=4096 count=1048576
-	
+
 	dd if=/dev/zero of=./x.zero.file bs=4096 count=1048576
-	
+
 ####打包、拆包
 
 	time tar -cf sendlog.tar ./sendlog/
-	
+
 	time tar -xf sendlog.tar
-	
+
 ####压缩、解压缩
 
 	压缩工具的比较测试参考：[Gzip vs Bzip2 vs LZMA vs XZ vs LZ4 vs LZO](http://pokecraft.first-world.info/wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO#Compression_time)
-	
+
 	可以看到，lz4在压缩率上略微逊色(对比pigz)，但是在解压速度上有这惊人的优势。
 
 	time tar -c sendlog/|lz4|pv > /dev/null
-	
+
 	time tar -c sendlog/|lz4|pv|ssh -c arcfour128 -o "MACs umac-64@openssh.com" 10.xxx.xxx.36 "cat - >/dev/null"
-	
+
 	for i in `seq 4 7`; do time tar -c ./sendlog/|lz4 -B$i |pv > /dev/null ;done
-	
+
 	time tar -c sendlog/|pv|lz4 -B4|ssh -c arcfour128 -o"MACs umac-64@openssh.com" 10.xxx.xxx.36 "lz4 -d |tar -xC /u01/backup_supu"
 
 ####传输
-   
+
    	scp
 
 ####整体流程
@@ -70,7 +70,7 @@ tags : [tools, linux]
 	scp -r -c arcfour128 ...
 	scp -r -c aes192-cbc ...
 	scp -r -c arcfour128 -o "MACs umac-64@openssh.com" ... 
-	
+
 ###测试
 
 ####加密算法
@@ -91,12 +91,11 @@ tags : [tools, linux]
 对比加密算法和压缩同时使用与前两种的传输效率
 
 	time tar -c sendlog/|lz4|ssh -c arcfour128 -o"MACs umac-64@openssh.com" 10.xxx.xx.36 "lz4 -d |tar -xC /u01/backup_supu"
- 
+
  	time tar -c sendlog/|pigz -p 16|ssh -c arcfour128 -o"MACs umac-64@openssh.com" 10.xxx.xx.36 "gzip -d|tar -xC /u01/backup_supu"
- 	
- 	
+
  对比发现，在压缩方面pigz与lz4并没有太大区别，但是lz4解压速度非常快，所以在这种需要立刻解压的场景下，lz4轻松胜出(bzip2这种就不需要测试了)。
- 
+
 ###总结
 
 ####关于lz4
@@ -114,4 +113,5 @@ lz4是一个让"人见人爱、花见花开"的压缩算法，能够在多核上
 ####参考
 
 http://www.neuhalfen.name/2009/02/04/scp_performance_gain_by_using_right_algorithm/
-	
+
+[HPN SSH](http://www.psc.edu/index.php/hpn-ssh)
