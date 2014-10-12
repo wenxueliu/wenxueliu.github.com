@@ -45,6 +45,7 @@ tags : [ English ]
 * marshal : 调度
 * round-robin : 循环
 * silver bullet : 银弹
+* be superseded by 取代
 * tl;dr : too long don't read
 * it is the de facto ... : 事实上
 * obsolete : 废弃，舍弃，通畅用于表示某个接口，比如, nestat is obsolete
@@ -53,3 +54,5 @@ tags : [ English ]
 * obsolete | deprecate 接口不在使用,废弃
 * drawback 缺陷
 * The fork function is a lively breeding ground for race conditions,
+* Code is the Coin of the Realm
+* OpenDaylight is rapidly becoming the focal point for SDN
