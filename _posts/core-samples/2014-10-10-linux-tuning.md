@@ -310,4 +310,12 @@ guest OS.
 
 [vegas congestion algorithm](http://www.cs.arizona.edu/projects/protocols/)
 
-[Tcp_Tuning](http://www.onlamp.com/pub/a/onlamp/2005/11/17/tcp_tuning.html)
+[Tcp_Tuning_1](http://www.onlamp.com/pub/a/onlamp/2005/11/17/tcp_tuning.html)
+
+[Tcp_Tuning_2](http://www.psc.edu/index.php/networking/641-tcp-tune)
+
+###Suffix
+
+RWND: Receiver Window
+BDP : Bandwidth Delay Product
+WSCAL: EThe window scale option
