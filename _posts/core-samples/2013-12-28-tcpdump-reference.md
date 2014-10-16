@@ -30,11 +30,11 @@ tags : [ network, tools, tutorial ]
 
  **NOTE** : 如果是初学关注经常用到的选项 -D -S -f -i -vv -n -q -t -e -w -F -l -r -s -XX
 
-`-A`  
+`-A`
 
     以ASCII码方式显示每一个数据包(不会显示数据包中链路层头部信息). 在抓取包含网页数据的数据包时, 可方便查看数据(nt: 即Handy for capturing web pages).
 
-`-c count` 
+`-c count`
 
     tcpdump将在接受到count个数据包后退出.
 
@@ -42,7 +42,7 @@ tags : [ network, tools, tutorial ]
 
     该选项使得tcpdump 在把原始数据包直接保存到文件中之前, 检查此文件大小是否超过file-size. 如果超过了, 将关闭此文件,另创一个文件继续用于原始数据包的记录. 新创建的文件名与-w 选项指定的文件名一致, 但文件名后多了一个数字.该数字会从1开始随着新创建文件的增多而增加. file-size的单位是百万字节(nt: 这里指1,000,000个字节,并非1,048,576个字节, 后者是以1024字节为1k, 1024k字节为1M计算所得, 即1M=1024 ＊ 1024 ＝ 1,048,576)
 
-`-d ` 
+`-d `
 
     以容易阅读的形式,在标准输出上打印出编排过的包匹配码, 随后tcpdump停止.(nt | rt: human readable, 容易阅读的,通常是指以ascii码来打印一些信息. compiled, 编排过的. packet-matching code, 包匹配码,含义未知, 需补充)
 
@@ -50,7 +50,7 @@ tags : [ network, tools, tutorial ]
 
 `-ddd` 以十进制数的形式打印出包匹配码(会在包匹配码之前有一个附加的'count'前缀).
 
-`-D` 
+`-D`
 
     打印系统中所有tcpdump可以在其上进行抓包的网络接口. 每一个接口会打印出数字编号, 相应的接口名字, 以及可能的一个网络接口描述. 其中网络接口名字和数字编号可以用在tcpdump 的-i flag 选项(nt: 把名字或数字代替flag), 来指定要在其上抓包的网络接口.
 
@@ -72,7 +72,7 @@ tags : [ network, tools, tutorial ]
 
     除了以上的语法格式(nt: 指spi@ipaddr algo:secret), 还可以在后面添加一个语法输入文件名字供tcpdump 使用(nt：即把spi@ipaddr algo:secret,... 中...换成一个语法文件名). 此文件在接受到第一个ESP　包时会打开此文件, 所以最好此时把赋予tcpdump 的一些特权取消(nt: 可理解为, 这样防范之后, 当该文件为恶意编写时,不至于造成过大损害).
 
-`-f` 
+`-f`
 
     显示外部的IPv4 地址时(nt: foreign IPv4 addresses, 可理解为, 非本机ip地址), 采用数字方式而不是名字.(此选项是用来对付Sun公司的NIS服务器的缺陷(nt: NIS, 网络信息服务, tcpdump 显示外部地址的名字时会用到她提供的名称服务): 此NIS服务器在查询非本地地址名字时,常常会陷入无尽的查询循环).
 
@@ -97,7 +97,7 @@ tags : [ network, tools, tutorial ]
     ``tcpdump  -l  |  tee dat'' 或者 ``tcpdump  -l   > dat  &  tail  -f  dat''.(nt: 前者使用tee来把tcpdump 的输出同时放到文件dat和标准输出中, 而后者通过重定向操作'>', 把tcpdump的输出放到dat 文件中, 同时通过tail把dat文件中的内容放到标准输出中)
 
 
-`-L` 
+`-L`
 
     列出指定网络接口所支持的数据链路层的类型后退出.(nt: 指定接口通过-i 来指定)
 
@@ -115,13 +115,13 @@ tags : [ network, tools, tutorial ]
 
 `-O` 不启用进行包匹配时所用的优化代码. 当怀疑某些bug是由优化代码引起的, 此选项将很有用.
 
-`-p` 
+`-p`
 
     一般情况下, 把网络接口设置为非'混杂'模式. 但必须注意 , 在特殊情况下此网络接口还是会以'混杂'模式来工作； 从而, '-p' 的设与不设, 不能当做以下选现的代名词:'ether host {local-hw-add}' 或  'ether broadcast'(nt: 前者表示只匹配以太网地址为host 的包, 后者表示匹配以太网地址为广播地址的数据包).
 
 `-q` 快速(也许用'安静'更好?)打印输出. 即打印很少的协议相关信息, 从而输出行都比较简短.
 
-`-R` 
+`-R`
 
     设定tcpdump 对 ESP/AH 数据包的解析按照 RFC1825而不是RFC1829(nt: AH, 认证头, ESP， 安全负载封装, 这两者会用在IP包的安全传输机制中). 如果此选项被设置, tcpdump 将不会打印出'禁止中继'域(nt: relay prevention field). 另外,由于ESP/AH规范中没有规定ESP/AH数据包必须拥有协议版本号域,所以tcpdump不能从收到的ESP/AH数据包中推导出协议版本号.
 
@@ -129,7 +129,7 @@ tags : [ network, tools, tutorial ]
 
     从文件file 中读取包数据. 如果file 字段为 '-' 符号, 则tcpdump 会从标准输入中读取包数据.
 
-`-S` 
+`-S`
 
     打印TCP 数据包的顺序号时, 使用绝对的顺序号, 而不是相对的顺序号.(nt: 相对顺序号可理解为, 相对第一个TCP 包顺序号的差距,比如, 接受方收到第一个数据包的绝对顺序号为232323, 对于后来接收到的第2个,第3个数据包, tcpdump会打印其序列号为1, 2分别表示与第一个数据包的差距为1 和 2. 而如果此时-S 选项被设置, 对于后来接收到的第2个, 第3个数据包会打印出其绝对顺序号:232324, 232325).
 
@@ -156,7 +156,7 @@ tags : [ network, tools, tutorial ]
 
 `-u`    打印出未加密的NFS 句柄(nt: handle可理解为NFS 中使用的文件句柄, 这将包括文件夹和文件夹中的文件)
 
-`-U`  
+`-U`
 
     使得当tcpdump在使用-w 选项时, 其文件写入与包的保存同步.(nt: 即, 当每个数据包被保存时, 它将及时被写入文件中,而不是等文件的输出缓冲已满时才真正写入此文件)
 
@@ -168,7 +168,7 @@ tags : [ network, tools, tutorial ]
 
 `-vv`  产生比-v更详细的输出. 比如, NFS回应包中的附加域将会被打印, SMB数据包也会被完全解码.
 
-`-vvv`  
+`-vvv`
 
      产生比-vv更详细的输出. 比如, telent 时所使用的SB, SE 选项将会被打印, 如果telnet同时使用的是图形界面,
      其相应的图形选项将会以16进制的方式打印出来(nt: telnet 的SB,SE选项含义未知, 另需补充).
@@ -237,7 +237,7 @@ tags : [ network, tools, tutorial ]
 对于链路层的协议,比如SLIP(nt: Serial Line InternetProtocol, 串联线路网际网络协议), 以及linux下指定'any' 设备, 并指定'cooked'(nt | rt: cooked 含义未知, 需补充) 抓取类型, 或其他设备类型,可以用'inbound' 和'outbount' 修饰符来指定想要的传输方向.
 
 **proto : ** 修饰符描述id所属的协议. **默认为与相应type匹配的修饰符**,可选的协议有:
-        
+
         ether   :物理以太网传输协议,如ether src foo
         fddi    :光纤分布数据网传输协议,如arp net 128.3
         tr      :路由跟踪的协议,如tcp port 21
@@ -247,14 +247,14 @@ tags : [ network, tools, tutorial ]
         decnet  :Digital Equipment Corporation开发的, 最早用于PDP-11机器互联的网络协议
         tcp/upd :TCP/IP协议栈中的两个传输层协议,如udp portrange 7000-7009
 
-   对于默认的情况,例如, 
-   
+   对于默认的情况,例如,
+
      `src foo = (ip or arp or rarp) src foo`: 来自主机foo的ip/arp/rarp协议数据包, 默认type为host)
      `net bar = (ip  or  arp  or rarp) net bar`: 来自或发往bar网络的ip/arp/rarp协议数据包
      `port 53 = (tcp or udp) port 53' : 发送或接收端口为53的tcp/udp协议数据包 
-   
+
    注:
-   
+
    由于tcpdump 直接通过数据链路层的 BSD 数据包过滤器或 DLPI(datalink provider interface, 数据链层提供者接口)来直接获得网络数据包, 其可抓取的数据包可涵盖上层的各种协议, 包括arp, rarp, icmp(因特网控制报文协议),ip, ip6, tcp, udp, sctp(流控制传输协议).
 
    fddi(Fiber Distributed Data Interface) 实际上与ether含义一样: tcpdump 会把他们当作一种指定网络接口上的数据链路层协议. 如同ehter网(以太网), FDDI 的头部通常也会有源, 目的, 以及包类型, 从而可以像ether网数据包一样对这些域进行过滤. 此外, FDDI 头部还有其他的域, 但不能被放到表达式中用来过滤
@@ -322,12 +322,12 @@ tags : [ network, tools, tutorial ]
 
 ###最重要形式：`expr relop expr`
 **注:对此处内容的掌握需要你熟悉相关协议**
-   
+
     relop: 表示关系操作符，可以为>, < ,>=,<=, =, !=之一，
     expr : 是一个算术表达式，由整数组成和二元运算符（＋，－，＊，/，＆，|, <<, >>)，
            长度操作，报文数据访问子。同时所有的整数都是无符号的，即0x80000000 和
             0xffffffff > 0。为了访问报文中的数据，可使用如下方式：
-           
+
            proto [ expr : size ]
            proto表示该问的报文，expr的结果表示该报文的偏移，size为可选的，表示从
            expr偏移量起的szie个字节，整个表达式为proto报文中,expr起的szie字节的
@@ -339,11 +339,11 @@ tags : [ network, tools, tutorial ]
 
 `ip[0] = 4` : ip报文中的第一个字节为version，即匹配IPv4的报文，
 
-`tcp[13] = 2` : 
+`tcp[13] = 2` :
 
     匹配一个syn报文，因为tcp的标志位为TCP报文的第13个字节，而syn在这个字节的低1位，故匹配只有syn标志的报文,上述条件是可满要求的，并且比较严格。
 
-`icmp[0]=8`: 
+`icmp[0]=8`:
 
     匹配ping命令的请求报文，因为icmp报文的第0字符表示类型，当类型值为8时表示为回显示请求。
 
@@ -363,10 +363,10 @@ tags : [ network, tools, tutorial ]
 
 ICMP中类型字节的值可以是：
 
-    icmp-echoreply, icmp-unreach, icmp-sourcequench, icmp-redi‐rect, icmp-echo, 
+    icmp-echoreply, icmp-unreach, icmp-sourcequench, icmp-redi‐rect, icmp-echo,
     icmp-routeradvert, icmp-routersolicit,
 
-    icmp-timxceed, icmp-paramprob, icmp-tstamp, icmp-tstam‐preply, icmp-ireq, 
+    icmp-timxceed, icmp-paramprob, icmp-tstamp, icmp-tstam‐preply, icmp-ireq,
     icmp-ireqreply, icmp-maskreq, icmp-maskreply.
 
 TCP中标志位字节的值可以是：
@@ -388,14 +388,14 @@ TCP中标志位字节的值可以是：
 
 让你随心所欲地使用tcpdump，将不用再从复杂的输出中去挑报文了！
 
-**NOTE**  
+**NOTE**
 
-    如果一个标识符前没有关键字, 则表达式的解析过程中最近用过的关键字(往往也是从左往右距离标识符最近的关键字)将被使用.比如,`not host vs and ace`是`not host vs and host ace` 的精简,而不是not (host vs or ace).(前两者表示, 所需数据包不是来自或发往host vs, 而是来自或发往ace.而后者表示数据包只要不是来自或发往vs或ac都符合要求)  
+    如果一个标识符前没有关键字, 则表达式的解析过程中最近用过的关键字(往往也是从左往右距离标识符最近的关键字)将被使用.比如,`not host vs and ace`是`not host vs and host ace` 的精简,而不是not (host vs or ace).(前两者表示, 所需数据包不是来自或发往host vs, 而是来自或发往ace.而后者表示数据包只要不是来自或发往vs或ac都符合要求)
 
     整个条件表达式可以被当作一个单独的字符串参数也可以被当作空格分割的多个参数传入tcpdump, 后者更方便些. 通常, 如果表达式中包含元字符(如正则表达式中的'*', '.'以及shell中的'('等字符)，最好还是使用单独字符串的方式传入. 这时,整个表达式需要被单引号括起来. 多参数的传入方式中, 所有参数最终还是被空格串联在一起, 作为一个字符串被解析.
 
 
-#tcpdump输出格式 
+#tcpdump输出格式
 
    总的的输出格式为：系统时间 来源主机.端口 > 目标主机.端口 数据包参数 
 
@@ -412,7 +412,7 @@ ICE 是一台装有linux的主机。它的MAC地址是0：90：27：58：AF：1A
 
 21：50：12是显示的时间， 847509是ID号，eth0 <表示从网络接口eth0接收该分组， eth0 >表示从网络接口设备发送分组， 8:0:20:79:5b:46是主机H219的MAC地址， 它表明是从源地址H219发来的分组. 0:90:27:58:af:1a是主机ICE的MAC地址， 表示该分组的目的地址是ICE。 ip 是表明该分组是IP分组，60 是分组的长度， h219.33357 > ICE. telnet 表明该分组是从主机H219的33357端口发往主机ICE的 TELNET(23)端口。 ack 22535 表明对序列号是222535的包进行响应。 win 8760表明发 送窗口的大小是8760。
 
-###ARP/RARP 数据包 
+###ARP/RARP 数据包
 
     tcpdump arp
 
@@ -430,7 +430,6 @@ tcpdump捕获的UDP包的一般输出信息是：
 UDP十分简单，上面的输出行表明从主机route的port1端口发出的一个UDP报文到主机ICE的port2端口，类型是UDP，包的长度是lenth。
 
 
-    
 ###TCP 数据包
 
 **TCP Header Format**
@@ -454,7 +453,7 @@ UDP十分简单，上面的输出行表明从主机route的port1端口发出的�
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                             data                              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   
+
 
 通常tcpdump对tcp数据包的显示格式如下:
 src > dst: flags data-seqno ack window urgent options
@@ -469,7 +468,7 @@ src > dst: flags data-seqno ack window urgent options
     (注:src, dst 和 flags 这三个域总是会被显示. 其他域的显示与否依赖于tcp协议头里的信息.)
 
 练习: 自己组织命令,抓与某一ip地址的tcp连接过程,并与上面解释对比.
- 
+
 ###抓取带有特殊标志的的TCP包(如SYN-ACK标志, URG-ACK标志等).
 
 在TCP的头部中, 有8比特(bit)用作控制位区域, 其取值为:
@@ -516,7 +515,7 @@ CWR | ECE | URG | ACK | PSH | RST | SYN | FIN
 在控制段的数据中, 只有比特1(bit number 1)被置位.
 
 假设编号为13的字节是一个8位的无符号字符型,并且按照网络字节号排序(nt:对于一个字节来说，网络字节序等同于主机字节序), 其二进制值如下所示:
-    
+
     00000010
 
 并且其10进制值为:
@@ -526,8 +525,8 @@ CWR | ECE | URG | ACK | PSH | RST | SYN | FIN
 接近目标了, 因为我们已经知道, 如果数据包头部中的SYN被置位, 那么头部中的第13个字节的值为2(nt: 按照网络序, 即大头方式, 最重要的字节在前面(在前面,即该字节实际内存地址比较小, 最重要的字节,指数学表示中数的高位, 如356中的3) ).表达为tcpdump能理解的关系式就是: tcp[13] 2
 
 从而我们可以把此关系式当作tcpdump的过滤条件, 目标就是监控只含有SYN标志的数据包:
-    
-    tcpdump -i et0 tcp[13] 2 
+
+    tcpdump -i et0 tcp[13] 2
 
 这个表达式是说"让TCP数据包的第13个字节拥有值2吧", 这也是我们想要的结果.
 
@@ -573,7 +572,7 @@ SYN-ACK的数据包(nt:SYN 和 ACK 标志都有), 来到时发生了什么:
 
 ###tcpdump 与wireshark
 
-   如果要用wireshark分析数据： 
+   如果要用wireshark分析数据：
         tcpdump -i eth0 -c 100 -s 0 -w /home/data.pcap 
 
    直接使用wireshark /home/data.pcap即可
@@ -585,7 +584,7 @@ SYN-ACK的数据包(nt:SYN 和 ACK 标志都有), 来到时发生了什么:
 
 1.截获所有210.27.48.1 的主机收到的和发出的所有的数据包:
 
-    tcpdump host 210.27.48.1 
+    tcpdump host 210.27.48.1
 
 2.打印helios 与 hot 或者与 ace 之间通信的数据包
 
