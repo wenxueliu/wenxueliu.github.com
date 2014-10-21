@@ -136,6 +136,7 @@ cool tools
 * ip
 * ifconfig
 * iwconfig
+* iwlist
 * ping
 * route
 * telnet
@@ -152,6 +153,7 @@ cool tools
 * iptables
 
 * curl
+* httpie
 * wget
 
 性能
@@ -186,6 +188,7 @@ cool tools
 * chroot
 * tune2fs
 * blktrace
+* blkid
 
 版本管理
 
@@ -248,6 +251,7 @@ gzip bzip2 zip unzip
 
 其他
 crontab -l
+Byobu
 
 http://man.linuxde.net/
 http://linux.51yip.com/
