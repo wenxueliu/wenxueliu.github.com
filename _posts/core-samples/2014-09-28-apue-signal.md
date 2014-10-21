@@ -109,3 +109,106 @@ Two signals that continually generate confusion are SIGCLD and SIGCHLD. The name
 SIGCLD (without the H) is from System V, and this signal has different semantics
 from the BSD signal, named SIGCHLD. The POSIX.1 signal is also named SIGCHLD.
 
+
+###Reliable-Signal Terminology and Semantics
+
+A process has the option of blocking the delivery of a signal. If a signal that
+is blocked is generated for a process, and if the action for that signal is
+either the default action or to catch the signal, then the signal remains
+pending for the process until the process either (a) unblocks the signal or (b)
+changes the action to ignore the signal. The system determines what to do with a
+blocked signal when the signal is delivered, not when it’s generated. This
+allows the process to change the action for the signal before it’s delivered.
+The sigpending function (Section 10.13) can be called by a process to determine
+which signals are blocked and pending.
+
+Each process has a signal mask that defines the set of signals currently blocked
+from delivery to that process. We can think of this mask as having one bit for
+each possible signal. If the bit is on for a given signal, that signal is
+currently blocked. A process can examine and change its current signal mask by
+calling sigprocmask.
+
+###kill raise function
+
+        #include <signal.h>
+        int kill(pid_t pid, int signo);
+        int raise(int signo);
+                Both return: 0 if OK, −1 on error
+
+If the signo argument is 0, then the normal error checking is performed by kill,
+but no signal is sent. This technique is often used to determine if a specific
+process still exists. that the test for process existence is not atomic. By the
+time that kill returns the answer to the caller, the process in question might
+have exited, so the answer is of limited value.
+
+####alarm
+
+        #include <unistd.h>
+        unsigned int alarm(unsigned int seconds);
+                Returns: 0 or number of seconds until previously set alarm
+
+* case 1
+
+If, when we call alarm, a previously registered alarm clock for the process has
+not yet expired, the number of seconds left for that alarm clock is returned as
+the value of this function.  That previously registered alarm clock is replaced
+by the new value.
+
+* case 2
+
+If a previously registered alarm clock for the process has not yet expired and
+if the seconds value is 0, the previous alarm clock is canceled. The number of
+seconds left for that previous alarm clock is still returned as the value of the
+function.
+
+* case 3
+
+If we intend to catch SIGALRM, we need to be careful to install its signal
+handler before calling alarm. If we call alarm first and are sent SIGALRM before
+we can install the signal handler, our process will terminate.
+
+    #include <stdio.h>
+    #include <string.h>
+    #include <unistd.h>
+    #include <signal.h>
+    #include <sys/types.h>
+    #include <pwd.h>
+
+    static void my_alram(int signo)
+    {
+        struct  passwd      *rootptr;
+        printf("signal hander\n");
+        alarm(2);
+    }
+
+    int main(int argc, char **argv)
+    {
+        struct passwd       *ptr;
+        /*uncomment for test case3
+        alarm(1);
+        sleep(2);
+        */
+
+        signal(SIGALRM,my_alram);
+        alarm(6);//test case 1
+        /*
+        uncomment for testing case2
+        alarm(0);
+        */
+        for(;;)
+        {
+            printf("wait signal\n");
+            sleep(1);
+        }
+    }
+
+####pause
+
+suspends the calling process until a signal is caught.
+
+        #include <unistd.h>
+        int pause(void);
+                Returns: −1 with errno set to EINTR
+
+
+
