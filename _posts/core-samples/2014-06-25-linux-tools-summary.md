@@ -248,10 +248,20 @@ gzip bzip2 zip unzip
 * fuser
 * trap
 
+论文管理
+Mendeley Desktop
+Reaya paper
+
+参考文献
+jabref
+
+书籍管理
+calibre
 
 其他
 crontab -l
 Byobu
+
 
 http://man.linuxde.net/
 http://linux.51yip.com/
