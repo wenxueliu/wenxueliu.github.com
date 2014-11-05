@@ -307,7 +307,7 @@ http://stackoverflow.com/questions/1612120/osgi-what-are-the-differences-between
 
 ###附录
 
-[Java API](https://jenkins.opendaylight.org/controller/job/controller-merge/lastSuccessfulBuild/artifact/target/apidocs/index.html)
+[Java API](https://jenkins.opendaylight.org/controller/job/controller-verify-stable-helium/ws/target/apidocs/index.html)
 
 [Openflow Protocol library](https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main#Public_API)
 
@@ -322,3 +322,9 @@ http://stackoverflow.com/questions/1612120/osgi-what-are-the-differences-between
 必读代码 sal
 
 首先创建一个 mvn 工程，然后创建 freature 绑定到这个工程。这样这个工程就成为一个特性。
+
+###concept
+
+container
+Global
+instance
