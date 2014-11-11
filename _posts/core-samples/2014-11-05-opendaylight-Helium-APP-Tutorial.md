@@ -103,8 +103,8 @@ $ vim pom.xml
 		  <modelVersion>4.0.0</modelVersion>
 		  <groupId>org.opendaylight.controller.myapp</groupId>
 		  <artifactId>myapp</artifactId>
-		  <packaging>jar</packaging>
-		  <version>1.0-SNAPSHOT</version>
+		  <packaging>bundle</packaging>
+		  <version>0.1</version>
 		  <name>myapp</name>
 		  <url>http://maven.apache.org</url>
 		  <build>
@@ -617,7 +617,7 @@ $ git clone https://github.com/opendaylight/controller.git
 
 $ cd ~/opendaylight/controller
 
-$ git checkout -b stable/helium
+$ git checkout -b stable/helium  origin/stable/helium
 
 * 安装 controller
 
