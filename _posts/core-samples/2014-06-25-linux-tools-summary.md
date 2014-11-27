@@ -79,6 +79,7 @@ cool tools
 * ulimit
 * service
 * chkconfig
+* chrt
 
 文本分析工具
 
@@ -99,6 +100,7 @@ cool tools
 * du
 * expect
 * split
+* exiftool //view and edit image
 
 远程登陆与执行
 
