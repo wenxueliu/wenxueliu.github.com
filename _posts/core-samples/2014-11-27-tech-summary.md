@@ -91,6 +91,10 @@ RFC 5405
 * try catch
 * assert
 
+##信号处理
+
+* 支持哪些信号，屏蔽哪些信号
+
 ##文档
 
 * droxgen
