@@ -8,16 +8,21 @@ tags : [linux, tools]
 
 cool tools
 
-* vagrant
-* docker
-* ranger
-* tmux
-* screen
+* firefox   addon vimperator is so powerful
+* vagrant   manage you virtual host by virtualbox
+* docker    linux container more lighter than virutal host
+* ranger    file manage
+* tmux      remote
+* screen    remote
 * watch
 * mplayer
 * jq
 * mdp
 * gunplot
+* xmind     notebook graph
+* smark     makrdown GUI editor
+* wiznote   notebook
+* gitbook   make markdown to pdf book
 
 查询
 
