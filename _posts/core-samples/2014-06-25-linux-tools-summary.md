@@ -23,6 +23,8 @@ cool tools
 * smark     makrdown GUI editor
 * wiznote   notebook
 * gitbook   make markdown to pdf book
+* pdsh
+* rsync
 
 查询
 
@@ -85,6 +87,8 @@ cool tools
 * service
 * chkconfig
 * chrt
+* host
+* mcelog
 
 文本分析工具
 
@@ -139,9 +143,11 @@ cool tools
 * iperf
 * pv
 * nc
+* bwm-ng
 
 * ip
 * ifconfig
+* ethtool
 * iwconfig
 * iwlist
 * ping
@@ -152,6 +158,7 @@ cool tools
 * iptraf
 * dig
 * host
+* nslookup
 
 * wireshark
 * air-ng
