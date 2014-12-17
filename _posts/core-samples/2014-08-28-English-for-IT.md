@@ -56,3 +56,5 @@ tags : [ English ]
 * The fork function is a lively breeding ground for race conditions,
 * Code is the Coin of the Realm
 * OpenDaylight is rapidly becoming the focal point for SDN
+* least-significant
+* most significant
