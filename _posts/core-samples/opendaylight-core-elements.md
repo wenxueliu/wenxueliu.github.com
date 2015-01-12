@@ -24,6 +24,21 @@ Allow for the network to be logically (and/or physically) split into different s
 Clustering that gives fine-grained redundancy and scale out while insuring network consistency. 
 
 
+
+###Controller
+
+		Clustering Manager 			Manages shared cache across controller instances
+		Container Manager 			Manages Network Slicing
+		Switch Manager 				Handles SB devices Information
+		Statistics Manager 			Collects Statistics information
+		Topology Manager 			Builds network topology
+		Host Tracker 				Tracks about connected hosts
+		Forwarding Rules Manager 	Installs Flows on SB devices
+		ARP Handler 				Handles ARP messages
+		Forwarding Manager 			Installs Routes and tracks next-hop
+		OpenFlow Plugin 			Interacts with OF switches
+		Netconf Plugin 				Interacts with Netconf switches 
+
 ###YANG
 
 [RFC6020]
@@ -198,7 +213,7 @@ Performance & scale
 * [YANG 创建 project Guide](https://wiki.opendaylight.org/view/Maven_Archetypes:odl-model-project)
 * YANG Tool 使用参照[这里](https://wiki.opendaylight.org/view/YANG_Tools:Maven_Plugin_Guide) 
 * [Code-Gernerate](https://wiki.opendaylight.org/view/Yang_Tools:YANG_to_Java_Mapping)
-
+* [Code-Gernerate1](https://wiki.opendaylight.org/view/Yang_Tools:Code_Generation_Demo:YANG2JAVA_Mapping_%28Flow_example%29)
 	controller/opendaylight/md-sal/samples/toaster
 	controller/opendaylight/md-sal/samples/toaster-consumer
 	controller/opendaylight/md-sal/samples/toaster-provider
@@ -328,3 +343,6 @@ http://stackoverflow.com/questions/1612120/osgi-what-are-the-differences-between
 container
 Global
 instance
+
+LLDPs 
+BDDPs
