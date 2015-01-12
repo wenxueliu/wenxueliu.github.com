@@ -16,6 +16,10 @@ cool tools
 * screen    remote
 * watch
 * mplayer
+* cloc
+* backup-manager
+
+
 * jq
 * mdp
 * gunplot
@@ -203,6 +207,7 @@ cool tools
 * tune2fs
 * blktrace
 * blkid
+* smartmontools apt-get install smartmontools
 
 版本管理
 
@@ -276,6 +281,12 @@ calibre
 crontab -l
 Byobu
 
+附录
+
+
+    mplayer -demuxer rawvideo -rawvideo w=176:h=144:format=yuy2 qvga.yuv -loop 0
+    mplayer -fps 30 test.264
+    mplayer -rawvideo format=help
 
 http://man.linuxde.net/
 http://linux.51yip.com/
