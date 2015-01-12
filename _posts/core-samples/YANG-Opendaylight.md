@@ -217,11 +217,26 @@ $ git clone https://github.com/opendaylight/l2switch.git
 参照
 
 * [这里](https://wiki.opendaylight.org/view/L2_Switch:Tutorial:Yang)
-* [这里](https://wiki.opendaylight.org/view/Yang_Tools:Code_Generation_Demo:YANG2JAVA_Mapping_%28Flow_example%29) 
+* [这里](https://wiki.opendaylight.org/view/YANG_Tools:YANG_to_Java_Mapping)
+
+来研究 YANG 的机制
+
+####logback
+
+$ cd controller/opendaylight/config/logback-config
+
+参照
+
+* [这里](https://wiki.opendaylight.org/view/OpenDaylight_Controller:Config:Examples:Logback)
+* [这里](https://wiki.opendaylight.org/view/YANG_Tools:YANG_to_Java_Mapping)
+
+import confi, rpc-context: 位于 controller/opendaylight/config/config-api/
 
 来研究 YANG 的机制
 
 ###YANG Demo
+
+[构建项目结构](https://wiki.opendaylight.org/view/Maven_Archetypes:odl-model-project)
 
 $ cd controller/opendaylight/md-sal/samples
 
