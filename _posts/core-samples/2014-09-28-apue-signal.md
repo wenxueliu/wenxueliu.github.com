@@ -211,4 +211,34 @@ suspends the calling process until a signal is caught.
                 Returns: −1 with errno set to EINTR
 
 
+###Signal Set
 
+        #include <signal.h>
+        int sigemptyset(sigset_t *set);
+        int sigfillset(sigset_t *set);
+        int sigaddset(sigset_t *set, int signo);
+        int sigdelset(sigset_t *set, int signo);
+            All four return: 0 if OK, −1 on errorint sigismember()
+
+        int sigismember(const sigset_t *set, int signo);
+            Returns: 1 if true, 0 if false, −1 on error
+
+All applications have to call either sigemptyset or sigfillset once for each
+signal set, before using the signal set, because we cannot assume that the C
+initialization for external and static variables (0) corresponds to the
+implementation of signal sets on a given system.
+
+
+        int sigprocmask(int how, const sigset_t *restrict set, sigset_t *restrict oset,)
+            Returns: 0 if OK, −1 on error
+
+The sigprocmask function is defined only for single-threaded processes.
+
+        int sigpending(sigset_t *set);
+            Returns: 0 if OK, −1 on error
+
+signals are not queued on this system.
+
+        int sigaction(int signo, const struct sigaction *restrict act,
+                struct sigaction *restrict oact);
+            Returns: 0 if OK, −1 on error
