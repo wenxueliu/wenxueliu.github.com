@@ -425,6 +425,33 @@ add ./lrkey.asc
 
 这时在 firefox 中输入 http://raspberrypi:9000 可以看到有 config-panel 和 stream 可供选择，选择相应界面进入即可。
 
+
+##通过网线直连 raspberry
+
+###windows
+
+	网线插入电脑
+	在无线网卡上点击属性，选择共享，点击 ** 选择 本地网卡
+
+	arp -a
+	查找那个显示为动态的地址
+
+###Linux
+
+	插入网线
+    $ sudo apt-get install isc-dhcp-server
+
+	$ sudo vi /etc/default/isc-dhcp-server
+
+	 改 INTERFACES="eth0″
+
+	$ sudo vi /etc/dhcp/dhcpd.conf
+	$ sudo ifconfig eth0 192.168.33.10/24
+	$ sudo service isc-dhcp-server restart
+    $ cat /var/lib/dhcp/dhcpd.leases
+    $ tcpdump -i eth0
+
+
 ##问题
 
 Q: /bin/bash: warning: setlocale: LC_ALL: cannot change locale (zh_CN.utf8)
