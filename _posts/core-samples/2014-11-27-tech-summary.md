@@ -114,3 +114,8 @@ RFC 5405
 * openCV
 * uv4l
 
+##API 设计
+http://www.ruanyifeng.com/blog/2014/05/restful_api.html
+http://www.thoughtworks.com/insights/blog/rest-api-design-resource-modeling
+http://codeplanet.io/principles-good-restful-api-design/
+https://restful-api-design.readthedocs.org/en/latest/
