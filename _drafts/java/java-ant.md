@@ -26,6 +26,9 @@ build.xml的根节点为 < project >，一般格式如下：
 * name : target的名称，可以在编译的时候指定是完成哪个target，否则采用project那里定义的default。
 * depends : 定义了依赖关系，值为其他target的name。多个依赖关系用","隔开，顺序执行完定义的依赖关系，才会执行这个target。
 * target 在 build.xml 中定义的顺序无所谓，但是 depends 中的顺序必须正确。
+* if 用于验证指定的属性是否存在，若不存在，所在 target 将不会被执行。
+* unless 与 if 功能正好相反，它也用于验证指定的属性是否存在，若不存在，所在 target 将会被执行。
+* description 关于 target 功能的简短描述和说明。
 
 ###编译源代码
 
@@ -55,22 +58,74 @@ build.xml的根节点为 < project >，一般格式如下：
 
 ###删除目录
 
-   <delete dir="classes" />
+   对文件或目录进行删除
+
+eg1. 删除某个文件：
+
+	<delete file="/home/photos/philander.jpg"/>
+
+eg2. 删除某个目录：
+
+	<delete dir="/home/photos"/>
+
+eg3. 删除所有的备份目录或空目录：
+
+	<delete includeEmptyDirs="true">
+		   <fileset dir="." includes="**/*.bak"/>
+	</delete>
+	   <delete dir="classes" />
 
    删除classes文件夹
 
 ###拷贝文件：
 
-    <copy todir="$\{backup.dir}"> 
+   	主要用来对文件和目录的复制功能
 
-        <fileset dir="$\{classes.dir}"/> 
+eg1. 复制单个文件：
 
-    </copy>
+	<copy file="original.txt" tofile="copied.txt"/>
+
+eg2. 对文件目录进行复制：
+
+	<copy todir="../dest_dir">
+		  <fileset dir="src_dir"/>
+	</copy>
+
+eg3. 将文件复制到另外的目录：
+
+	<copy file="source.txt" todir="../home/philander"/>
+		
+eg4. 利用 property
+
+		<copy todir="$\{backup.dir}"> 
+
+		    <fileset dir="$\{classes.dir}"/> 
+
+		</copy>
 
 把fileset文件夹下面的所有文件拷贝到 backup.dir
 
+###移动文件或目录
 
-###执行一个类：
+eg1. 移动单个文件：
+
+<move file="sourcefile" tofile=”destfile”/>
+
+eg2. 移动单个文件到另一个目录：
+
+<move file="sourcefile" todir=”movedir”/>
+
+eg3. 移动某个目录到另一个目录：
+
+<move todir="newdir"> <fileset dir="olddir"/></move>
+
+###echo 命令
+
+    该任务的作用是根据日志或监控器的级别输出信息。它包括 message 、 file 、 append 和 level 四个属性，举例如下
+
+<echo message="Hello,ANT" file="/home/philander/logs/ant.log" append="true">
+
+###java
 
     <java dir="$\{build}" classname="bean.ant.TestAnt" fork="true" />
 
@@ -78,10 +133,52 @@ build.xml的根节点为 < project >，一般格式如下：
 * classname: 类名。
 * fork : 要设置为true。
 
+ 该标签用于执行编译的.class文件。
+
+* classname 表示将执行的类名。
+* jar表示包含该类的JAR文件名。
+* classpath所表示用到的类路径。
+* fork表示在一个新的虚拟机中运行该类。
+* failonerror表示当出现错误时自动停止。
+* output 表示输出文件。
+* append表示追加或者覆盖默认文件。
+
 因为你编译放class的文件夹正在使用，所以要新打开一个虚拟机。
 
+###javac
+
+    用户编译一个或一组java文件。
+
+* srcdir表示源程序的目录。
+* destdir表示class文件的输出目录。
+* include表示被编译的文件的模式。
+* excludes表示被排除的文件的模式。
+* classpath表示所使用的类路径。
+* debug表示包含的调试信息。
+* optimize表示是否使用优化。
+* verbose 表示提供详细的输出信息。
+* fileonerror表示当碰到错误就自动停止。
+
+
+###jar
+
+	该标签用来生成一个jar文件。
+
+* destfile表示JAR文件名。
+* basedir表示被归档的文件名。
+* includes表示别归档的文件模式。
+* exchudes表示被排除的文件模式。
 
 ###javadoc：
+
+* packagenames="com.lcore.*"
+* sourcepath="${basedir}/src"
+* destdir="api"
+* version="true"
+* use="true"
+* windowtitle="Docs API"
+* encoding="UTF-8"
+* docencoding="GBK">  
 
 ###path
 
