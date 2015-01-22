@@ -2,10 +2,11 @@
 
 ##Thread 
 
-在Java中，“线程”指两件不同的事情
+在 Java 中，“线程”指两件不同的事情
 
 * java.lang.Thread类的一个实例
 * 线程的执行。 
+
     使用 java.lang.Thread 类或者 java.lang.Runnable 接口编写代码来定义、实例化和启动新线程。
     一个 Thread 类实例只是一个对象，像 Java 中的任何其他对象一样，具有变量和方法，生死于堆上。
     Java中，每个线程都有一个调用栈，即使不在程序中创建任何新的线程，线程也在后台运行着。
@@ -14,7 +15,59 @@
     线程总体分两类：用户线程和守候线程。
     当所有用户线程执行完毕的时候，JVM自动关闭。但是守候线程却不独立于JVM，守候线程一般是由操作系统或者用户自己创建的。
     线程睡眠到期自动苏醒，并返回到可运行状态，不是运行状态。
- 
+##synchronization and concurrency
+
+The words synchronization and concurrency are overlapping and sometimes synonymous terms. The word synchronization generally means sharing data between multiple processors or threads, while concurrency refers to a measure of– or the art of improving– how effectively an application allows multiple jobs required by that application (e.g. serving web page requests from a web server) to run simultaneously.
+
+In the past, synchronization and concurrency have been key concerns especially for server applications– such as web servers– that must deal with a continual stream of simultaneous requests. But increasingly, they are key issues for mundane client applications and more and more programmers will have to come to terms with them over the coming years. This is a result of the multicore era that we are now in: there is a trend for all computers– including humble desktops and games consoles–to be multiprocessor machines. Whereas in the past increased computing power came each year in the form of increased clock speeds (albeit with other architectural improvements), from now on such increases are likely to come in the form of increased multiprocessor capability. Programmers who don't get to grips with multiprocessor programming won't be able to take advantage of the increased capability of new machines!
+
+Now the good news: Java is generally a good choice of language for multiprocessor applications, both because of in-built concepts fundamental to the language and because of a relatively rich concurrency library provided from Java version 5 onwards. On the following pages, we examine various issues of concurrent programming in Java. First, a look at some general issues about concurrent programming, and the situation pre-Java 5 which recent versions of the platform have improved on:  
+
+##Synchronization, concurrency and multitasking: why is it difficult?
+
+Essentially, multi-processor systems are difficult to program because:
+
+* they involve multiple processes competing for shared resources;
+* these resources perform differently. (For example, a hard disk is much slower to access than RAM.) 
+
+A highly concurrent application needs to make sure that each process is `in the right place at the 
+right time` to take advantage of what resources are available at any given moment. 
+
+A typical situation is illustrated in Figure 1. The architectural details have been heavily simplified
+in this diagram, but it shows four processes "running" on a machine with two CPUs. Since there are only 
+two CPUs, only two processes can actually be running simultaneously at any one time; the operating system 
+must periodically allocate CPU time to different processes– or "swap them in and out" of the CPUs– so 
+that over time all four make progress. 
+
+<p align="center">
+    <img src="SyncDiag1.png" width="60%">
+    <small> concurrent </small>
+</p>
+
+Additionally– and usually more significantly– each running process, via the CPU, may access main memory, 
+shared between the two CPUs, and other shared peripherals such as hard disks. These "external" resources 
+are much slower to access than registers and cached instructions "internal" to the CPU. Additionally, 
+only one value can physically be written to a memory address at once, and only one part of a hard disk 
+can physically be accessed at once. These factors pose two main problems: 
+
+* How to avoid "wasting" CPUs when they need to wait for a response from one of the slower resources (such as memory or hard disk); 
+* What to do when two CPUs access want to access a shared resource simultaneously. 
+
+
+The ideal solution to the first problem is that while one process is waiting on a slow resource, it is 
+"swapped out" of the CPU and another process that requires the CPU runs in the meantime. Moving towards 
+this ideal generally falls under the heading of concurrency. In the second case, what physically happens 
+(e.g. which processor "gets in there first" when the two CPUs simultaneously want to write different 
+values to a memory location) is determined by the hardware and can be unpredictable. So when data is 
+being shared in this way, we need to take special steps in software to manage simultaneous access and 
+give predictable results. This second issue is generally the realm of synchronization.
+
+###Concurrency on a single-processor machine
+
+Concurrency is still often an issue on a single-processor machine because processes are usually swapped in and out of the available processor under interrupt. One process cannot necessarily predict when another one is going to "step in" and potentially change some data that it was in the middle of accessing. And the issue of not "wasting" the CPU still remains: if process 1 is waiting for data from the hard disk, and thus cannot usefully use the CPU, it would be useful to let process 2 use the CPU in the meantime.
+
+
+
 
 ##ThreadLocal
 
