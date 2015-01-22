@@ -113,6 +113,7 @@ cool tools
 * du
 * expect
 * split
+* pv
 * exiftool //view and edit image
 
 远程登陆与执行
