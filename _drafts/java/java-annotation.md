@@ -11,14 +11,14 @@ Before annotations, program metadata was available through java comments or by j
 Creating custom annotation is similar to writing an interface, except that it interface keyword is prefixed with @ symbol. We can declare methods in annotation. Let’s see annotation example and then we will discuss it’s features.
 
     package com.journaldev.annotations;
-     
+
     import java.lang.annotation.Documented;
     import java.lang.annotation.ElementType;
     import java.lang.annotation.Inherited;
     import java.lang.annotation.Retention;
     import java.lang.annotation.RetentionPolicy;
     import java.lang.annotation.Target;
-     
+
     @Documented
     @Target(ElementType.METHOD)
     @Inherited
@@ -55,28 +55,28 @@ Java Provides three built-in annotations.
 Let’s see a java example showing use of built-in annotations as well as use of custom annotation created by us in above example.
 
     package com.journaldev.annotations;
-     
+
     import java.io.FileNotFoundException;
     import java.util.ArrayList;
     import java.util.List;
-     
+
     public class AnnotationExample {
-     
+
         public static void main(String[] args) {
         }
-     
+
         @Override
         @MethodInfo(author = "Pankaj", comments = "Main method", date = "Nov 17 2012", revision = 1)
         public String toString() {
             return "Overriden toString method";
         }
-     
+
         @Deprecated
         @MethodInfo(comments = "deprecated method", date = "Nov 17 2012")
         public static void oldMethod() {
             System.out.println("old method, don't use it.");
         }
-     
+
         @SuppressWarnings({ "unchecked", "deprecation" })
         @MethodInfo(author = "Pankaj", comments = "Main method", date = "Nov 17 2012", revision = 10)
         public static void genericsTest() throws FileNotFoundException {
@@ -94,12 +94,12 @@ I believe example is self explanatory and showing use of annotations in differen
 We will use Reflection to parse java annotations from a class. Please note that Annotation Retention Policy should be RUNTIME otherwise it’s information will not be available at runtime and we wont be able to fetch any data from it.
 
     package com.journaldev.annotations;
-     
+
     import java.lang.annotation.Annotation;
     import java.lang.reflect.Method;
-     
+
     public class AnnotationParsing {
-     
+
         public static void main(String[] args) {
             try {
                 for (Method method : AnnotationParsing.class
@@ -121,7 +121,7 @@ We will use Reflection to parse java annotations from a class. Please note that 
                                 System.out.println("Method with revision no 1 = "
                                         + method);
                             }
-     
+
                         } catch (Throwable ex) {
                             ex.printStackTrace();
                         }
@@ -131,7 +131,7 @@ We will use Reflection to parse java annotations from a class. Please note that 
                 e.printStackTrace();
             }
         }
-     
+
     }
 
 Output of the above program is:
@@ -147,3 +147,8 @@ Output of the above program is:
 Reflection API is very powerful and used widely in Java, J2EE frameworks like Spring, Hibernate, JUnit, check out Reflection in Java.
 
 That’s all for the java annotation tutorial, I hope you learned something from it.
+
+
+##TODO
+javax.annotation.concurrent.GuardedBy
+javax.annotation.Nonnull
