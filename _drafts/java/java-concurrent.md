@@ -28,6 +28,27 @@
 * 上下文切换
 * 
 
+###CyclicBarrier CountDownLatch Semaphore Exchange
+
+CountDownLatch 和 CyclicBarrier 都能够实现线程之间的等待，只不过它们侧重点不同：
+
+* CountDownLatch一般用于某个线程A等待若干个其他线程执行完任务之后，它才执行；
+* CyclicBarrier一般用于一组线程互相等待至某个状态，然后这一组线程再同时执行；
+
+另外，CountDownLatch是不能够重用的，而CyclicBarrier是可以重用的。
+
+Semaphore 其实和锁有点类似，它一般用于控制对某组资源的访问权限。
+
+
+###Callable Future FutrueTask 
+
+一般情况下是配合 ExecutorService 来使用的
+
+Future 作为 ExecutorService.submit()
+FutrueTask 既可以作为Runnable被线程执行，又可以作为Future得到Callable的返回值。
+
+
+
 
 ##synchronization and concurrency
 
