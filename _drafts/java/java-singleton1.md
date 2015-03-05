@@ -154,7 +154,8 @@ volatile 变量前后的代码仍然存在重排序问题。这个 volatile 屏�
 
 ##静态内部类 static nested class
 
-我比较倾向于使用静态内部类的方法，这种方法也是《Effective Java》上所推荐的。
+我比较倾向于使用静态内部类的方法，这种方法也是《Effective Java》上所推荐的。也叫 Initialization on Demand 
+Holder (IODH) 方法
 
 ```java
 
@@ -168,6 +169,9 @@ volatile 变量前后的代码仍然存在重排序问题。这个 volatile 屏�
         }
     }
 ```
+
+依靠JVM对内部静态类&静态成员初始化的顺序机制来实现的。 这种实现方法虽然有一定的局限性，比如，只能用于静态成员，
+ClassLoader要确定等等，但是这种实现方法已经足够好了。 
 
 ##枚举 Enum
 
