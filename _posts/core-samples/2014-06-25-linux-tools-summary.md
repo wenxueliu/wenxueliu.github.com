@@ -94,6 +94,12 @@ cool tools
 * host
 * mcelog
 
+配置管理
+
+puppet
+chef
+ansible
+
 文本分析工具
 
 * sort
