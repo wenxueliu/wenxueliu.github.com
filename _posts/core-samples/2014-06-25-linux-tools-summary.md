@@ -170,6 +170,7 @@ ansible
 * dig
 * host
 * nslookup
+* tc
 
 * wireshark
 * air-ng
