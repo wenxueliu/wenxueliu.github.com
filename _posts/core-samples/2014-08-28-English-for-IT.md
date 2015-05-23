@@ -59,3 +59,11 @@ tags : [ English ]
 * least-significant
 * most significant
 * can't make head or tail of it : 没有头绪
+* vice versa 反之亦然
+* with a grain of salt 以怀疑的态度
+* FWIW : For What It'worth 不论真假；随便说说
+* ride the wave of : 从某某中受益
+* coarse-grained : 粗粒度
+* finer-grain : 细粒度
+* subject to : 屈从于
+* To the best of our knowledge: 据我们所知
