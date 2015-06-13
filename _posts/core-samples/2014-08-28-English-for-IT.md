@@ -67,3 +67,4 @@ tags : [ English ]
 * finer-grain : 细粒度
 * subject to : 屈从于
 * To the best of our knowledge: 据我们所知
+* NPE : null pointer exception
