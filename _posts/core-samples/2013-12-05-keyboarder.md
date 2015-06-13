@@ -144,7 +144,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     !num : 重复执行历史命令中的第num个，可借助history查找。如 !-1 !10等等。
     string+↑↓ : 包含以string开头的历史命令
     !-n : 执行倒数第 n 个命令
-    !string : 最近的以string开头的命令
+    !string : 最近的以 string 为关键词开头的命令
     !string:p : 仅仅打印，并不执行最近以string的命令
     !?string[?] : 重复最近的包含string的命令
     shift+alt+# : 可以注释命令，这样可以在命令历史中找回。如果用ctrl+C放弃，则不会有记录。
@@ -154,6 +154,7 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     !* : 上一命令的所有参数
     !*:p : 打印上一命令的所有参数
     !# : 引用当前行
+    !cmd:n : cmd 命令第 n 个参数
     !:n : 上一条命令第 n 个参数
     !:x-y : 上一条命令从 x 到 y 的参数
     !:n* : 上一条命令从 n 开始到最后的参数
@@ -166,6 +167,8 @@ no，当你熟悉后，你就会感到效率上的提升是鼠标无法替代的
     ^string1^string2^ : 执行上一个命令中，string1全部用string2代替
     !:s/old/new : 上一条命令old替换为new
     !:gs/old/new :上一条命令old替换为new(全局)
+    ![FILE_NAME] : 如 rm !(2.txt) 删除除2.txt的所有文件
+    [ ! -d PATH ] : 检查文件夹是否存在 , 比如 [ ! -d /home/test/ ] && mkdir /home/test/
 
     echo $HISTSIZE
     echo $HISTFILE
