@@ -72,6 +72,7 @@ RFC 5405
 * YANG
 * NETCONF
 * RTSP
+* NETCONF
 
 ##配置格式
 
@@ -108,6 +109,24 @@ RFC 5405
 * git
 * markdown
 * 其他运维相关工具
+
+##云计算
+
+* Openstack
+* Mesos + Marathon
+* Docker
+
+##Docker 管理工具
+
+* Swarm
+* Kebernetes
+* weave
+* socketplane
+
+##框架
+
+* Zookepper
+
 
 ##视频
 
