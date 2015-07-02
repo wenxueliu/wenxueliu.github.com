@@ -20,7 +20,7 @@ cool tools
 * backup-manager
 
 
-* jq
+* jq        json with shell
 * mdp
 * gunplot
 * xmind     notebook graph
