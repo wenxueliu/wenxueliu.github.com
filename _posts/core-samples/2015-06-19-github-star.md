@@ -16,6 +16,7 @@
 [dotfiles](https://github.com/adam8157/dotfiles) : 配置文件
 [webmagic](https://github.com/code4craft/webmagic) : web 爬虫框架
 [github-cheat-sheet](https://github.com/tiimgreen/github-cheat-sheet) :
+[jq](https://github.com/stedolan/jq) : shell 解析 json
 
 [pacVim](https://github.com/jmoon018/PacVim) : vim 学习游戏
 [gitbook](https://github.com/GitbookIO/gitbook) : 个人文档管理工具
@@ -26,6 +27,7 @@
 [db-reading](https://github.com/rxin/db-readings) : 数据库方面资料列表
 [http-api-design](https://github.com/interagent/http-api-design) : HTTP REST API 设计
 [笔记](https://github.com/chenruiao/ares) : 个人笔记
+[asm](https://github.com/0xAX/asm) :linux 64 汇编
 
 ###语言
 
