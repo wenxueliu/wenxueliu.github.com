@@ -74,6 +74,16 @@ RFC 5405
 * RTSP
 * NETCONF
 
+##RPC
+
+* gRPC
+* Thrift
+* Wildfly
+* Dubbo
+* JBoss EAP
+
+##MQ
+
 ##配置格式
 
 * yaml
@@ -128,6 +138,7 @@ RFC 5405
 * Zookepper
 
 
+
 ##视频
 
 * openCV
@@ -138,3 +149,7 @@ http://www.ruanyifeng.com/blog/2014/05/restful_api.html
 http://www.thoughtworks.com/insights/blog/rest-api-design-resource-modeling
 http://codeplanet.io/principles-good-restful-api-design/
 https://restful-api-design.readthedocs.org/en/latest/
+
+##实时日志系统
+基于流式处理，采用 flume 收集日志，发送到 kafka 队列做缓冲，storm 分布式实时框架进行消费处理，
+短期数据落地到 hbase、mongo中，长期数据进入 hadoop 中存储
