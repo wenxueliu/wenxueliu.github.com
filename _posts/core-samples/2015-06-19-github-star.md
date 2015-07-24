@@ -17,6 +17,7 @@
 [webmagic](https://github.com/code4craft/webmagic) : web 爬虫框架
 [github-cheat-sheet](https://github.com/tiimgreen/github-cheat-sheet) :
 [jq](https://github.com/stedolan/jq) : shell 解析 json
+[tmux](https://www.gitbook.com/book/aquaregia/tmux-productive-mouse-free-development_zh/details):tmux 书
 
 [pacVim](https://github.com/jmoon018/PacVim) : vim 学习游戏
 [gitbook](https://github.com/GitbookIO/gitbook) : 个人文档管理工具
@@ -76,6 +77,10 @@
 
 [huptim](https://github.com/amscanne/huptime) : 无法杀死进程, 0 重加载时间
 [Sentry](https://github.com/getsentry/sentry) : 错误日志图形化
+[个人博客主题](https://github.com/iissnan/hexo-theme-next) : 我喜欢的风格, 待整合
+[pmu-tool](https://github.com/andikleen/pmu-tools) : CPU 性能监控
+[per-tool](https://github.com/brendangregg/perf-tools) : CPU 性能监控
+[FlameGraph](https://github.com/brendangregg/FlameGraph) : 火焰图, 监控系统各个瓶颈
 
 ###Docker
 
