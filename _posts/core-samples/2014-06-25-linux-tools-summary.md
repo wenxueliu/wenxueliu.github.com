@@ -100,6 +100,16 @@ puppet
 chef
 ansible
 
+双机热备
+
+MHA
+keeplived
+
+负载均衡
+
+LVS
+Nginx
+
 文本分析工具
 
 * sort
@@ -126,6 +136,8 @@ ansible
 
 * ssh
 * pssh
+* fabric
+* pgm
 * Fabric
 * scp
 * vnc
