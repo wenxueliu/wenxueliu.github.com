@@ -549,7 +549,7 @@ Example 1
 		set -x           #从该命令之后打开跟踪功能
 		echo first       #将被打印输出的Shell命令
 		set +x           #该Shell命令也将被打印输出，然而在该命令被执行之后，所有的命令将不再打印输出
-		echo second     #该Shell命令将不再被打印输出
+		echo second      #该Shell命令将不再被打印输出
 	$ chmod +x trace_patial_command.sh
 	$ ./trace_patial_command.sh
 		+ echo first
@@ -558,6 +558,65 @@ Example 1
 		second
 
 #### trap 捕捉信号
+
+    trap [-lp] [[arg] sigspec ...]
+
+    sigspec 包括 <signal.h> 中定义的各个 signal， EXIT，ERR，RETURN 和 DEBUG。
+
+各个 signal 这里就不介绍了。EXIT 会在 shell 退出时执行指定的命令。若当前
+shell 中有命令执行返回非零值，则会执行与 ERR 相关联的命令。而 RETURN 是针对
+source 和 . ，每次执行都会触发 RETURN 陷阱。若绑定一个命令到
+DEBUG，则会在每一个命令执行之前，都会先执行 DEBUG 这个
+trap。这里要注意的是，ERR 和 DEBUG 只在当前 shell 有效。若想函数和子 shell
+自动继承这些 trap，则可以设置 -T(DEBUG/RETURN) 和 -E(ERR)。
+
+比如，下面的脚本会在退出时，执行echo：
+
+    #!/bin/bash
+    trap "echo this is a exit echo" EXIT
+    echo "this is a normal echo"
+
+或者,让脚本中命令出错时,把相应的命令打印出来：
+
+    #!/bin/bash 
+    trap 'echo $BASH_COMMAND return err' ERR echo this is a normal test
+    UnknownCmd
+
+这个脚本的输出如下:
+
+    this is a normal test
+    tt.sh: line 6: UnknownCmd: command not found
+    UnknownCmd return err
+
+亦或者, 让脚本的命令单步执行:
+
+    #!/bin/bash
+    trap '(read -p "[$0 : $LINENO] $BASH_COMMAND ?")' DEBUG
+    echo this is a test
+    i=0
+    while [ true ]
+    do
+        echo $i
+            ((i++))
+    done
+
+其输出如下:
+
+    [tt.sh : 5] echo this is a test ?
+    this is a test
+    [tt.sh : 7] i=0 ?
+    [tt.sh : 8] [ true ] ?
+    [tt.sh : 10] echo $i ?
+    0
+    [tt.sh : 11] ((i++)) ?
+    [tt.sh : 8] [ true ] ?
+    [tt.sh : 10] echo $i ?
+    1
+    [tt.sh : 11] ((i++)) ?
+    [tt.sh : 8] [ true ] ?
+    [tt.sh : 10] echo $i ?
+    2
+    [tt.sh : 11] ((i++)) ?
 
 
 #### date
@@ -570,3 +629,31 @@ Example 1
 
 	time1=$(date +%Y-%m-%d\ %H:%M:%S -d "1970-01-01 UTC $time1 seconds");
 
+#### log
+
+    _loglevel=2
+
+    DIE() {
+        echo "Critical: $1" >&2
+        exit 1
+    }
+
+    INFO() {
+        [ $_loglevel -ge 2 ] && echo "INFO: $1" >&2
+    }
+
+    ERROR() {
+        [ $_loglevel -ge 1 ] && echo "ERROR: $1" >&2
+    }
+
+这里的实现只是简单的加了一个 loglevel, 其实可以把 log 输出到一个文件中, 或者给
+log 加上颜色. 比如:
+
+    # add color
+    [ $_loglevel -ge 1 ] && echo -e "\033[31m ERROR:\033[0m $1" >&2
+    # redirect to file
+    [ $_loglevel -ge 1 ] && echo "ERROR: $1" > /var/log/xxx_log.$BASHPID]]"
+
+###参考
+
+http://www.tinylab.org/bash-debugging-tools/
