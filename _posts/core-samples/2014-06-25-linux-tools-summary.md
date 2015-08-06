@@ -132,6 +132,16 @@ Nginx
 * pv
 * exiftool //view and edit image
 
+代码分析
+
+callgrap
+cflow
+tree2dox
+dot
+gprof
+valgrind
+gprof2dot
+
 远程登陆与执行
 
 * ssh
@@ -189,6 +199,7 @@ Nginx
 * nmap
 * tcpdump
 * iptables
+* hping3
 
 * curl
 * httpie
