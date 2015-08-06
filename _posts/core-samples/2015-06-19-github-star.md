@@ -29,6 +29,7 @@
 [http-api-design](https://github.com/interagent/http-api-design) : HTTP REST API 设计
 [笔记](https://github.com/chenruiao/ares) : 个人笔记
 [asm](https://github.com/0xAX/asm) :linux 64 汇编
+[C++11并发](https://github.com/forhappy/A-Detailed-Cplusplus-Concurrency-Tutorial/)
 
 ###语言
 
@@ -118,6 +119,7 @@
 [http-parser](https://github.com/joyent/http-parser) : http 解析库
 [AioEpollSendfile](https://github.com/oneApple/AioEpollSendfile) : AIO 实现
 [lwan](https://github.com/lpereira/lwan)
+[libuv book](http://forhappy.github.com/uvbook)
 
 ###web 压力测试
 
