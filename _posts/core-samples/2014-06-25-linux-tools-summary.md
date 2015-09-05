@@ -18,6 +18,7 @@ cool tools
 * mplayer
 * cloc
 * backup-manager
+* autojump
 
 
 * jq        json with shell
@@ -93,6 +94,8 @@ cool tools
 * chrt
 * host
 * mcelog
+* taskset : 设置进程和 CPU 的亲和性
+
 
 配置管理
 
@@ -192,7 +195,8 @@ gprof2dot
 * dig
 * host
 * nslookup
-* tc
+* tc        :linux traffic control
+* netperf
 
 * wireshark
 * air-ng
@@ -216,7 +220,7 @@ gprof2dot
 性能
 
 * vmstat
-* mpstat
+* mpstat  //apt-get install sysstat
 * iostat
 * pidstat
 * htop
@@ -267,6 +271,7 @@ gprof2dot
 * pldd
 * dmesg
 * strace
+* pstack
 * ipcs
 * ipcrm
 
