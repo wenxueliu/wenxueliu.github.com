@@ -197,6 +197,7 @@ gprof2dot
 * nslookup
 * tc        :linux traffic control
 * netperf
+* qperf     : RHEL 网络带宽基准测试
 
 * wireshark
 * air-ng
