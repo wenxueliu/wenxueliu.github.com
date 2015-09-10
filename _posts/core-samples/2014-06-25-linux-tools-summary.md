@@ -43,6 +43,7 @@ cool tools
 * whereis
 * date
 * time
+* curl ip.cn  ident.me ipinfo.io ifconfig.me
 
 用户管理
 
@@ -252,6 +253,7 @@ gprof2dot
 * blktrace
 * blkid
 * smartmontools apt-get install smartmontools
+* fio
 
 版本管理
 
