@@ -19,6 +19,7 @@ cool tools
 * cloc
 * backup-manager
 * autojump
+* fish
 
 
 * jq        json with shell
@@ -96,6 +97,7 @@ cool tools
 * host
 * mcelog
 * taskset : 设置进程和 CPU 的亲和性
+* update-rc.d : 开机启动服务管理
 
 
 配置管理
@@ -224,7 +226,7 @@ gprof2dot
 * vmstat
 * mpstat  //apt-get install sysstat
 * iostat
-* pidstat
+* pidstat 监控进程
 * htop
 * top
 * /proc/stat
@@ -254,6 +256,7 @@ gprof2dot
 * blkid
 * smartmontools apt-get install smartmontools
 * fio
+* blktrace
 
 版本管理
 
@@ -313,6 +316,11 @@ gzip bzip2 zip unzip
 * pkill
 * fuser
 * trap
+
+日志
+
+kafka
+sentry : 日志聚合, 报警
 
 论文管理
 Mendeley Desktop
