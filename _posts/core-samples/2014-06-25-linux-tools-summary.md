@@ -275,11 +275,20 @@ gprof2dot
 * objdump 分析目标内容  反汇编
 * ldd
 * pldd
-* dmesg
-* strace
 * pstack
 * ipcs
 * ipcrm
+
+诊断
+
+* systemtap
+* ktap
+* perf
+* strace
+* dmesg
+* ftrace
+* trace-cmd
+* ltrace
 
 
 压缩及解压
