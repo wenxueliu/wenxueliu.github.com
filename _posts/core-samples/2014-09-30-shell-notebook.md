@@ -83,15 +83,19 @@ Example 2
         
 ###函数声明及调用
  
-       	function greeting
-       	{
-           	echo "Hi $1 and $2";
-       	}
+       	$ function greeting { echo "Hi $1 and $2"; return 1; }
        
        	$ greeting tom joe
        		Hi tom and joe
+
+       	$ function greeting { echo "Hi joe" ; echo $1; return $1; }
+
+        $ if greeting 0; then echo "return 1"; else echo "return 0"; fi
+        $ if greeting 1; then echo "return 1"; else echo "return 0"; fi
+        $ if greeting 2; then echo "return 1"; else echo "return 0"; fi
        
        	$unset -f greeting
+
        
 ###格式化输出 printf (类似于 awk 的printf)
 
@@ -654,6 +658,89 @@ log 加上颜色. 比如:
     # redirect to file
     [ $_loglevel -ge 1 ] && echo "ERROR: $1" > /var/log/xxx_log.$BASHPID]]"
 
-###参考
+###数组
 
+    用 () 定义数组
+    a=(1 2 3 4 5)
+    echo $a
+
+
+    用${#数组名[@或*]} 可以得到数组长度
+    echo ${#a[@]}
+
+    用${数组名[下标]} 下标是从0开始 下标是：*或者@ 得到整个数组内容
+    echo ${a[2]}
+    echo ${a[*]}
+
+    直接通过 数组名[下标] 就可以对其进行引用赋值，如果下标不存在，自动添加新一个数组元素
+    a[1]=100
+    echo ${a[*]}
+
+    a[5]=100
+    echo ${a[*]}
+
+    直接通过：unset 数组[下标] 可以清除相应的元素，不带下标，清除整个数据。
+    a=(1 2 3 4 5)
+    unset a
+    echo ${a[*]}
+    a=(1 2 3 4 5)
+    unset a[1]
+    echo ${a[*]}
+    echo ${#a[*]}
+
+    直接通过 ${数组名[@或*]:起始位置:长度} 切片原先数组，返回是字符串，中间用“空格”分开，因此如果加上”()”，
+    将得到切片数组，
+    a=(1 2 3 4 5)
+    echo ${a[@]:0:3}
+    echo ${a[@]:1:4}
+    c=(${a[@]:1:4})
+    echo ${#c[@]}
+    echo ${c[*]}
+
+    调用方法是：${数组名[@或*]/查找字符/替换字符} 该操作不会改变原先数组内容，如果需要修改，可以看上面例子，重新定义数据。
+    a=(1 2 3 4 5)
+    echo ${a[@]/3/100}
+    echo ${a[@]}
+    a=(${a[@]/3/100})
+    echo ${a[@]}
+
+    数组元素包含空格
+    a=("1 2" "2 3" 4 5 6)
+    echo "array list" ${a[*]}
+    echo "array size" ${#a[*]}
+    echo "array size" "${#a[*]}"
+    echo "array size" ${!a[@]}"
+
+    参考 http://www.cnblogs.com/chengmo/archive/2010/09/30/1839632.html
+
+###case
+
+    在shell的case语句中，可以使用匹配模式:
+        * 匹配所有的字符
+        ? 匹配单个字符
+        [...]匹配[]括起的字符
+
+    echo "please input number 1 to 3"
+    read number
+    case $number in
+    1|2|3)
+        echo "you input 1"
+        ;;
+    4|5)
+        echo "you input 2"
+        ;;
+    6)
+        echo "you input 3"
+        ;;
+    *)
+        echo "error! the number you input isn't 1 to 3"
+        ;;
+    esac
+
+###命令变量
+
+    DATE=$(date +%F)
+    DATE=`date +%F`
+
+###参考
 http://www.tinylab.org/bash-debugging-tools/
