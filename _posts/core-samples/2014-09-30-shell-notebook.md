@@ -658,6 +658,31 @@ log 加上颜色. 比如:
     # redirect to file
     [ $_loglevel -ge 1 ] && echo "ERROR: $1" > /var/log/xxx_log.$BASHPID]]"
 
+```
+    #!/bin/bash
+
+    process()
+    {
+        ls abc
+        date
+        sleep 2
+    }
+
+    LOGFILE="/tmp/log.txt"
+    touch $LOGFILE
+    tail -f $LOGFILE &
+    pid=$!
+    exec 3>&1
+    exec 4>&2
+    exec &>$LOGFILE
+    process
+    ret=$?
+    exec 1>&3 3>&-
+    exec 2>&4 4>&-
+    kill -15 $pid
+    exit $ret
+```
+
 ###数组
 
     用 () 定义数组
