@@ -72,7 +72,7 @@ Ctrl+b  ： 激活控制台；此时以下按键生效，这是输入下面每�
 * `:` : 进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器
 * `[` : 进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出
 * `~` : 列出提示信息缓存；其中包含了之前tmux返回的各种提示信息
-    
+
 Note:
 > 这些命令要像vi的命令一样熟悉，就要不断地用。有一个技巧是：如果忘掉命令了，你可用通过`Ctrl-b ?`查看，这也是你在一个没有经过自己配置的新环境迅速查找相关命令的极佳方式。所以，此命令一定不能忘记。
 
@@ -111,7 +111,7 @@ Note:
     按 C-a [ 进入复制模式，如果有设置 `setw -g mode-keys vi` 的话，可按 `vi` 的按键模式操作。移动至待复制的文本处，按一下`空格`，结合 vi 移动命令开始选择，选好后按`回车`确认。
     按 `C-a ]` 粘贴已复制的内容。
 
-配置    
+配置
 ------------------------------------------------
 ###tmux配置文件的地址
 
@@ -173,6 +173,7 @@ Note:
     bind -t vi-copy 'v' begin-selection
     bind -t vi-copy 'y' copy-selection
     bind y run-shell "tmux show-buffer | xclip -sel clip -i" \; display-message "Copied tmux buffer to system clipboard"
+
 **交换两个窗格**
 
     bind ^u swapp -U # 与上窗格交换 Ctrl-u
@@ -186,6 +187,7 @@ Note:
 **色彩设置**
 
     set -g default-terminal “screen-256color” 让tmux支持256色
+
 设置底部状态条的颜色
 
     set -g status-fg yellow
@@ -212,7 +214,7 @@ Note:
 
 ###状态栏
 
-tmux的状态栏配置非常简单。相比screen就…… 比如我的配置中：
+tmux的状态栏配置非常简单。相比 screen 就比如我的配置中：
 
     set -g status-left "#[fg=green]s#S:w#I.p#P#[default]"
 
@@ -233,6 +235,7 @@ tmux的状态栏配置非常简单。相比screen就…… 比如我的配置中
     #非当前窗口中有事件发生时（比如一个耗时的命令跑完了），状态栏上会有高亮提醒
 
 ###修改生效
+
 * 进入命令模式后，执行 `:source-file ~/.tmux.conf` 之后，更改的配置才会生效
 * 也可以设置绑定 `bind r source-file ~/.tmux.conf` 按r可以让更改后的tmux设置生效
 
