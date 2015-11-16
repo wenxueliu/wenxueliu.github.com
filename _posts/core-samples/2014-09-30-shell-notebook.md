@@ -803,5 +803,12 @@ log 加上颜色. 比如:
     DATE=$(date +%F)
     DATE=`date +%F`
 
+###实现 map
+
+    declare -A data
+    data["127.0.0.1"]="127.0.0.2"
+    echo ${data[@]}
+    echo ${!data[@]}
+
 ###参考
 http://www.tinylab.org/bash-debugging-tools/
