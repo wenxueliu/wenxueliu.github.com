@@ -69,6 +69,9 @@ tags : [ setting,linux ]
 	# echo 2000000 > /proc/sys/fs/nr_open
 
 
+注: centos 6 版本, 是先读 /etc/security/limits.conf, 如果 /etc/security/limits.d/ 目录下还有配置文件的话,
+会遍历读取里面文件, 所以 /etc/security/limits.d/ 里面的文件里面的配置会覆盖/etc/security/limits.conf的配置.
+
 ###查看当前系统使用的打开文件描述符数
 
 	# cat /proc/sys/fs/file-nr
