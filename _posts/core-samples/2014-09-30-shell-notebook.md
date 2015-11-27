@@ -24,7 +24,8 @@ tags : [shell, linux, script]
 
 ###初始化顺序
 
-	 /etc/profile    ( ~/.bash_profile | ~/.bash_login | ~/.profile )    ~/.bashrc
+    登陆 shell : /etc/profile  ~/.bash_profile  ~/.bash_login  ~/.profile
+    交互非登陆 shell : /etc/bash.bashrc ~/.bashrc, (linux 在 ~/.profile source ~/.bashrc)
 
 ###set 命令
 
