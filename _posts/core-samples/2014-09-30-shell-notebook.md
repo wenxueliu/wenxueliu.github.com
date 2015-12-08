@@ -31,10 +31,33 @@ tags : [shell, linux, script]
 
  	set -o allexport 当前shell变量对其所有子shell都有效.
     set +o allexport 当前shell变量对其所有子shell都无效.
-    set -o noclobber 重定向输出时,如果输出文件已经存在则提示输出失败, date > out; date > out, 第二次操作失败
+    set -o noclobber 重定向输出时, 如果输出文件已经存在则提示输出失败, date > out; date > out, 第二次操作失败
     set +o noclobber 缺省shell行为. date > out; date > out, 第二次操作成功
     shopt -s extglob 使用扩展通配符,如 abc?(2|9)K, abc*([0-9]), abc+([0-9]), no@(thing|body), no!(thing|body)
     其中?,*,+,@和!都是用于修饰后面的()的.
+
+###命令执行
+
+一个标准的命令行格式为: command-name options argument
+
+若从技术细节来看，shell 会依据 IFS(Internal Field Seperator) 将 command line 所输入的文字给拆解为"字段"(word).
+然后再针对特殊字符(meta)先作处理，最后再重组整行 command line.
+
+其中的 IFS 是 shell 预设使用的字段分隔符, 可以由一个及多个如下按键组成：
+
+* 空格键(White Space)
+* 表格键(Tab)
+* 回车键(Enter)
+
+系统可接受的命令名称(command-name)可以从如下途径获得:
+
+* 明确路径所指定的外部命令
+* 命令别名(alias)
+* 自定功能(function)
+* shell 内建命令(built-in)
+* $PATH 之下的外部命令
+
+每一个命令行均必需含用命令名称, 这是不能缺少的.
 
 ###declare
 
@@ -602,16 +625,17 @@ Example 1
 
     trap [-lp] [[arg] sigspec ...]
 
-    sigspec 包括 <signal.h> 中定义的各个 signal， EXIT，ERR，RETURN 和 DEBUG。
+    trap -l 列出所有信号
 
-各个 signal 这里就不介绍了。EXIT 会在 shell 退出时执行指定的命令。若当前
-shell 中有命令执行返回非零值，则会执行与 ERR 相关联的命令。而 RETURN 是针对
-source 和 . ，每次执行都会触发 RETURN 陷阱。若绑定一个命令到
-DEBUG，则会在每一个命令执行之前，都会先执行 DEBUG 这个
-trap。这里要注意的是，ERR 和 DEBUG 只在当前 shell 有效。若想函数和子 shell
-自动继承这些 trap，则可以设置 -T(DEBUG/RETURN) 和 -E(ERR)。
+* EXIT 在 shell 退出时执行指定的命令
+* ERR  shell 中有命令执行返回非零值, 则会执行与相关联的命令
+* RETURN 是针对 source 和 . , 每次执行都会触发 RETURN 陷阱.
+* DEBUG 在每一个命令执行之前, 都会先执行 DEBUG 这个 trap.
 
-比如，下面的脚本会在退出时，执行echo：
+注: ERR 和 DEBUG 只在当前 shell 有效. 若想函数和子 shell 自动继承这些 trap,
+则可以设置 -T(DEBUG/RETURN) 和 -E(ERR)
+
+比如, 下面的脚本会在退出时, 执行 echo:
 
     #!/bin/bash
     trap "echo this is a exit echo" EXIT
@@ -620,7 +644,8 @@ trap。这里要注意的是，ERR 和 DEBUG 只在当前 shell 有效。若想�
 或者,让脚本中命令出错时,把相应的命令打印出来：
 
     #!/bin/bash 
-    trap 'echo $BASH_COMMAND return err' ERR echo this is a normal test
+    trap 'echo $BASH_COMMAND return err' ERR
+    echo this is a normal test
     UnknownCmd
 
 这个脚本的输出如下:
@@ -726,7 +751,6 @@ log 加上颜色. 比如:
     a=(1 2 3 4 5)
     echo $a
 
-
     用${#数组名[@或*]} 可以得到数组长度
     echo ${#a[@]}
 
@@ -734,14 +758,14 @@ log 加上颜色. 比如:
     echo ${a[2]}
     echo ${a[*]}
 
-    直接通过 数组名[下标] 就可以对其进行引用赋值，如果下标不存在，自动添加新一个数组元素
+    直接通过数组名[下标] 就可以对其进行引用赋值，如果下标不存在，自动添加新一个数组元素
     a[1]=100
     echo ${a[*]}
 
     a[5]=100
     echo ${a[*]}
 
-    直接通过：unset 数组[下标] 可以清除相应的元素，不带下标，清除整个数据。
+    直接通过: unset 数组[下标] 可以清除相应的元素，不带下标，清除整个数据。
     a=(1 2 3 4 5)
     unset a
     echo ${a[*]}
@@ -774,6 +798,16 @@ log 加上颜色. 比如:
     echo "array size" ${!a[@]}"
 
     参考 http://www.cnblogs.com/chengmo/archive/2010/09/30/1839632.html
+
+    将数组赋值给其他变量
+    a=("1 2" "2 3" 4 5 6)
+    echo $a, ${a[@]}, ${#a[@]}
+    b=${a[@]}
+    echo $b, ${b[@]}, ${#b[@]}
+    c=(${a[@]})
+    echo $c, ${c[@]}, ${#c[@]}
+    for (( i=0; i < ${#a[@]}; i++ )); do d[$i]=${a[$i]}; done
+    echo $d, ${#d[@]}, ${d[@]}
 
 ###case
 
@@ -810,6 +844,16 @@ log 加上颜色. 比如:
     data["127.0.0.1"]="127.0.0.2"
     echo ${data[@]}
     echo ${!data[@]}
+
+###echo
+
+   echo "abc"
+   echo -n "abc"
+   当不想 echo 输出的字符自动换行, 用第二种方法
+
+###last
+
+   显示最近登陆的用户及时间
 
 ###参考
 http://www.tinylab.org/bash-debugging-tools/
