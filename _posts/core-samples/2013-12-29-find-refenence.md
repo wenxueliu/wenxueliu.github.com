@@ -309,8 +309,11 @@ find 命令配合使用 exec 和 xargs
 
     1. find / -name filename -exec rm -rf {} \;
 	   其中，{} 表示你找出来的结果。\ 则相当于“宪法”，没什么说头，就是这么规定的，在 -exec 后面需要一个表示该命令终结的的符号。可以在 man find 中找到答案。
-        
+
     2. 要让 rm 识别 find 的结果，如下：`find / -name filename | xargs rm -rf`，之所以 `find . -name filename |rm -rf` 不通过，是因为rm命令不接受从标准输入传过来的指令
+
+    3. 如果有空格的文件名 xargs会拆分就会删除失败 或者误删了其他的-0:
+    以\0作为分割, 或者误删了其他的-0: 以\0作为分割, 因此 `find . -type f -name "*.txt" -print0 | xargs -0 rm -f` 更合理
 
 **问题** : find -name ".*" -perm -007 和 find -name ".*" -perm 777 有区别吗？
 
