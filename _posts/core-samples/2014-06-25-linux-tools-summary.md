@@ -345,6 +345,15 @@ calibre
 crontab -l
 Byobu
 
+
+直播
+
+webRTC
+HLS(http live streaming)
+RTMP
+p2p
+
+
 附录
 
 
