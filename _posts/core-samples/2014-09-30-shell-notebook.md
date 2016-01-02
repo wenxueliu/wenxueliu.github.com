@@ -627,13 +627,17 @@ Example 1
 
     trap -l 列出所有信号
 
+    stty -a 可以列出中断信号与键盘的对应
+
 * EXIT 在 shell 退出时执行指定的命令
 * ERR  shell 中有命令执行返回非零值, 则会执行与相关联的命令
 * RETURN 是针对 source 和 . , 每次执行都会触发 RETURN 陷阱.
 * DEBUG 在每一个命令执行之前, 都会先执行 DEBUG 这个 trap.
 
-注: ERR 和 DEBUG 只在当前 shell 有效. 若想函数和子 shell 自动继承这些 trap,
-则可以设置 -T(DEBUG/RETURN) 和 -E(ERR)
+注:
+
+1. ERR 和 DEBUG 只在当前 shell 有效. 若想函数和子 shell 自动继承这些 trap, 则可以设置 -T(DEBUG/RETURN) 和 -E(ERR)
+2. 脚本程序通常是以从上到下的顺序解释执行的，所以必须在你想保护的那部分代码以前指定trap命令.
 
 比如, 下面的脚本会在退出时, 执行 echo:
 
