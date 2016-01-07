@@ -23,6 +23,7 @@ git 自动补全
 
 下载补全脚本
 
+方法一
     cd ~
     curl -v https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 
@@ -32,10 +33,22 @@ git 自动补全
         . ~/.git-completion.bash
     fi
 
+方法二
+
+    cp contrib/completion/git-completion.bash /etc/bash_completion.d/
+    /etc/bash_completion.d/git-completion.bash
+
+
 bashrc生效
 
     source .bashrc
 
+git 配色输出
+----------------
+
+在 CentOS 默认 git 输出是没有配色:
+
+git config --global --add color.ui true
 
 查看日志
 -----------------
