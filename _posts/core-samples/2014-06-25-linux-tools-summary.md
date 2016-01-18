@@ -204,7 +204,7 @@ gprof2dot
 
 * wireshark
 * air-ng
-* nmap
+* nmap     : sudo nmap -PT -oN -oG -A -p 80,22 -e wlan0 -sS -sV 192.168.0.1
 * tcpdump
 * iptables
 * hping3
@@ -332,16 +332,20 @@ kafka
 sentry : 日志聚合, 报警
 
 论文管理
+
 Mendeley Desktop
 Reaya paper
 
 参考文献
+
 jabref
 
 书籍管理
+
 calibre
 
 其他
+
 crontab -l
 Byobu
 
@@ -352,6 +356,13 @@ webRTC
 HLS(http live streaming)
 RTMP
 p2p
+
+单机性能测试
+
+sysbench    CPU
+fio         磁盘IO
+mbw         内存带宽
+netperf     网卡带宽
 
 
 附录
