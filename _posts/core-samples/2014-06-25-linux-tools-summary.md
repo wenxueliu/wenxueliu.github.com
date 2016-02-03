@@ -183,6 +183,8 @@ gprof2dot
 * pv
 * nc
 * bwm-ng
+* tcpflow
+* ngrep
 
 * ip
 * ifconfig
