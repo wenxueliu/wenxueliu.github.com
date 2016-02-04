@@ -6,6 +6,14 @@ tags : [shell, linux, script]
 ---
 {% include JB/setup %}
 
+每次当我们完成系统登入(log in)，我们就取得一个互动模式的 shell ，也称为 login shell 或 primary shell。
+若从进程(process)角度来说，我们在 shell 所下达的命令，均是 shell 所产生的子进程。这现像，我们暂可称之
+为 fork 。如果是执行脚本(shell script)的话，脚本中的命令则是由另外一个非互动模式的子 shell (sub shell)
+来执行的。也就是 primary shell 产生 sub shell 的行程，sub shell 再产生 script 中所有命令的进程。
+
+从技术细节来看，shell 会依据 IFS(Internal Field Seperator) 将 command line 所输入的文字给拆解为"字段"(word)。
+然后再针对特殊字符(meta)先作处理，最后再重组整行 command line 。
+
 ####参数
 
     $$:      : 表示当前shell的pid.
@@ -854,6 +862,79 @@ log 加上颜色. 比如:
    echo "abc"
    echo -n "abc"
    当不想 echo 输出的字符自动换行, 用第二种方法
+
+   { } 是将其内一系列 command line 置于不具名的函式中执行
+
+###awk 传递外边变量
+A=0
+awk "{print /$$A}" 1.txt
+awk /{print/ /$$A/} 1.txt
+awk '{print $'$A'}' 1.txt
+awk '{print $'"$A"'}' 1.txt     # 注："$A" 包在 soft quote 中
+
+###exec 与 source 的区别
+
+    exec 也是让 script 在同一个进程上执行，但是原有进程则被结束了
+
+###() 与 {} 的区别
+
+() 将 command group 置于 sub-shell 去执行，也称 nested sub-shell。
+{} 则是在同一个 shell 内完成，也称为 non-named command group。
+
+通常而言，若所作的修改是临时的，且不想影响原有或以后的设定，那我们就 nested sub-shell ，
+反之，则用 non-named command group 。
+
+###$(()) 与 $() 还有${}
+
+$() 与 `` (反引号) 都是用来做命令替换用(command substitution)的
+
+所谓的命令替换就是完成引号里的命令行，然后将其结果替换出来，再重组命令行
+
+在多层次的复合替换中，`` 须要额外的跳脱(\`)处理，而 $() 则比较直观, 因此 $() 优选
+
+${} 其实就是用来作变量替换用的, $var 与 ${var} 并没有啥不一样。但是用 ${} 会比较精确的界定变量名称的范围
+
+# 是去掉左边(在鉴盘上 # 在 $ 之左边)
+% 是去掉右边(在鉴盘上 % 在 $ 之右边)
+单一符号是最小匹配﹔两个符号是最大匹配。
+
+$(()) : 用来作整数运算
+
+echo $((16#2a)) 结果为 42 (16进位转十进制)
+
+(()) 也可重定义变量值，或作 testing
+
+a=5; b=7; ((a < b)) 会得到  0 (true) 的返回值
+
+###$@ 与 $*
+
+精确来讲，两者只有在 soft quote 中才有差异，否则，都表示"全部参数"( $0 除外)。
+
+第十个参数 ${10}
+function 一样可以读取自己的(有别于 script 的) postitional parameter ，惟一例外的是 $0 而已
+
+若在 command line 上跑 my.sh p1 "p2 p3" p4 的话，
+不管是 $@ 还是 $* ，都可得到 p1 p2 p3 p4 就是了。
+但是，如果置于 "" 中的话：
+"$@" 则可得到 "p1" "p2 p3" "p4" 这三个不同的词段(word)﹔
+"$*" 则可得到 "p1 p2 p3 p4" 这一整串单一的词段。
+
+###用 test
+
+bash 的 test 目前支持的测试对像只有三种：
+
+* string：字符串，也就是纯文字。
+* integer：整数( 0 或正整数，不含负数或小数点)。
+* file：文件。
+
+###返回值
+
+若在 script 里，用 exit RV 来指定其值，若没指定，在结束时以最后一道命令之 RV 为值。
+若在 function 里，则用 return RV 来代替 exit RV 即可。
+
+###为什么 cat < file >; file
+
+在 IO Redirection 中，stdout 与 stderr 的管道会先准备好，才会从 stdin 读进资料
 
 ###last
 
