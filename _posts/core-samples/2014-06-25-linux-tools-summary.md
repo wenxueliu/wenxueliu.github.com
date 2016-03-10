@@ -206,7 +206,7 @@ gprof2dot
 
 * wireshark
 * air-ng
-* nmap     : sudo nmap -PT -oN -oG -A -p 80,22 -e wlan0 -sS -sV 192.168.0.1
+* nmap     : sudo nmap -PT -A -p 80,22 -e wlan0 -sS -sV 192.168.0.1
 * tcpdump
 * iptables
 * hping3
@@ -358,6 +358,7 @@ webRTC
 HLS(http live streaming)
 RTMP
 p2p
+vokoscreen : 屏幕录制
 
 单机性能测试
 
