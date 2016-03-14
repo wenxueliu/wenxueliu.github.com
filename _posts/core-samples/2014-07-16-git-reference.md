@@ -276,6 +276,8 @@ tag
 	git log --since=`.month.ago --until=2.weeks.ago //一个月之前到半个月之前的log 
 	git log --since ==2013-08.01 --until=2013-09-07 //某个时间段的 log   
 
+    git diff --shortstat "@{0 day ago}" 命令，可以查看今天你写了多少行代码。
+
 ##附录
 
 ###问题
