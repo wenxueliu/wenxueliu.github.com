@@ -53,6 +53,8 @@ cool tools
 * usedel
 * adduser
 * chown
+* last
+* lastb
 
 文件相关
 
@@ -71,6 +73,12 @@ cool tools
 * > file
 
 * lsof
+
+lsof -lnPR +c0 -Di +f fgn 我最喜欢的lsof参数前缀。
+查看被活动进程删除的文件: lsof -lnPR +c0 -Di +f fgn +L1 -X
+针对crash dump直接使用: lsof -lnPR +c0 -Di +f fgn +L1 -X -k unix.0 -m vmcore.0
+查看所有套接字: lsof -lnPR +c0 -Di +f fgn -oo1 -i
+
 * fuse
 * file
 * paste
@@ -378,3 +386,9 @@ netperf     网卡带宽
 http://man.linuxde.net/
 http://linux.51yip.com/
 http://blog.51yip.com/manual/shell/index.html
+
+在 linux上获取随机数据的标准做法是从/dev/(u)random中读取。
+当entropy pool被耗尽时，读取/dev/random将产生阻塞，直至
+收集到新的随机数据，这减慢了随机数产生的速率。读取
+/dev/urandom不会产生阻塞，它会重用internal pool以产生更多
+伪随机数。更多时候你需要的是/dev/urandom，而不是/dev/random。
