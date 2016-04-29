@@ -45,6 +45,8 @@ cool tools
 * date
 * time
 * curl ip.cn  ident.me ipinfo.io ifconfig.me
+* last reboot : 查看启动时间
+* who -b
 
 用户管理
 
@@ -192,7 +194,7 @@ gprof2dot
 * nc
 * bwm-ng
 * tcpflow
-* ngrep
+* ngrep :ngrep -d any -W byline 'a_search_string' 'dst port 80
 
 * ip
 * ifconfig
