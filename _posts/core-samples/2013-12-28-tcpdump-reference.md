@@ -385,6 +385,10 @@ TCP中标志位字节的值可以是：
     tcpdump ‘host 192.168.240.91 && icmp[icmptype] = icmp-echo’
     tcpdump ‘host 192.168.1.100 && vrrp’
     tcpdump 'ether src 00:00:00:00:00:02 && ether[0] & 1 !=0'
+    tcpdump -i <interface> "tcp[tcpflags] & (tcp-syn) != 0"
+    tcpdump -i <interface> "tcp[tcpflags] & (tcp-ack) != 0"
+    tcpdump -i <interface> "tcp[tcpflags] & (tcp-fin) != 0"
+    tcpdump -r <interface> "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"
 
 让你随心所欲地使用tcpdump，将不用再从复杂的输出中去挑报文了！
 
