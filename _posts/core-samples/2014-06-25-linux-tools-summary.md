@@ -224,6 +224,7 @@ gprof2dot
 * curl
 * httpie
 * wget
+* http-prompt : pip install http-prompt
 
 * httpload
 * webbench
@@ -232,6 +233,7 @@ gprof2dot
 * autobench
 * httperf
 * sysbench
+
 
 性能
 
