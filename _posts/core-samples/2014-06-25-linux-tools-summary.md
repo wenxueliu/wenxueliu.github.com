@@ -107,7 +107,10 @@ lsof -lnPR +c0 -Di +f fgn 我最喜欢的lsof参数前缀。
 * host
 * mcelog
 * taskset : 设置进程和 CPU 的亲和性
+* cset: cset shield -c 1-3 ; cset shield -k on
+* cpuid : CPU 详细信息
 * update-rc.d : 开机启动服务管理
+* top  press f press j
 
 
 配置管理
@@ -139,7 +142,6 @@ Nginx
 * grep
 * ack 替代 grep
 * cut
-* tee
 * paste
 * od
 * du
@@ -147,6 +149,7 @@ Nginx
 * split
 * pv
 * exiftool //view and edit image
+* stdbuf
 
 代码分析
 
