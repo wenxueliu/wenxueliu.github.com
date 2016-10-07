@@ -228,6 +228,7 @@ gprof2dot
 * httpie
 * wget
 * http-prompt : pip install http-prompt
+* aria2 : 下载工具
 
 * httpload
 * webbench
