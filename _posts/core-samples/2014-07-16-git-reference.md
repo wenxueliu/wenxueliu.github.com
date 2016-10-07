@@ -210,6 +210,61 @@ tag
 
 显示文件中每一行的作者，最后一次改动后进行的提交(commit)以及该次提交的时间戳。
 
+
+回退历史
+-----------------
+
+如果只是在本地修改，还没有在本地提交, 希望放弃修改
+
+    git checkout --    : 放弃上一次更改
+
+git checkout 将工作目录（working directory）里的文件修改成先前Git已知的状态。
+你可以提供一个期待回退分支的名字或者一个确切的 SHA 码，Git 也会默认检出 HEAD ——
+即：当前分支的上一次提交。
+
+用这种方法“撤销”的修改都将真正的消失。它们永远不会被提交。因此Git不能恢复它们。此时，一定要明确自己在做什么！
+
+如果只是在本地提交还没有推送到远程仓库, 希望修改提交历史
+
+    git commit --amend : 实际上这个提交只是重写了先前的提交信息
+    git reset
+    git reset --hard
+
+git reset将你的仓库纪录一直回退到指定的最后一个SHA代表的提交，那些提交就像
+从未发生过一样。默认情况下，git reset会保留工作目录（working directory）。
+这些提交虽然消失了，但是内容还在磁盘上。这是最安全的做法，但通常情况是：
+你想使用一个命令来“撤销”所有提交和本地修改——那么请使用--hard参数吧。
+
+    git reflog
+
+git reflog不会永远存在。Git将会定期清理那些“不可达（unreachable）”的对象。不要期望能够在reflog里找到数月前的提交记录。
+
+reflog 只是你个人的。你不能用你的 reflog 来恢复其他开发者未push的提交。
+
+如果你想确切的回滚到某次提交
+
+    git cherry-pick。
+
+
+如果已经将代码推送到远程仓库, 但是发现出现问题，希望回退到之前提交
+
+    git revert
+
+git revert将根据给定SHA的相反值，创建一个新的提交。如果旧提交是“matter”，那么
+新的提交就是“anti-matter”——旧提交中所有已移除的东西将会被添加进到新提交中，
+旧提交中增加的东西将在新提交中移除。
+
+这是Git最安全、也是最简单的“撤销”场景，因为这样不会修改历史记录——你现在可以
+git push 下刚刚 revert 之后的提交来纠正错误了。
+
+你提交了一些变更，然后你意识到你正在master分支上，但你期望的是在feature分支上执行这些提交
+
+    git branch feature
+    git reset --hard origin/master
+    git checkout feature
+
+
+
 重构提交历史
 -----------------
 
@@ -278,6 +333,12 @@ tag
 
     git diff --shortstat "@{0 day ago}" 命令，可以查看今天你写了多少行代码。
 
+停止跟踪一个文件
+---------------
+
+    git rm --cached FILENAME
+
+
 ##附录
 
 ###问题
@@ -331,3 +392,4 @@ tag
 
 * git权威指南
 * http://zengrong.net/post/1746.htm
+* http://www.jointforce.com/jfperiodical/article/796
