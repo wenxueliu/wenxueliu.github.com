@@ -9,17 +9,21 @@ tags : [linux, tools]
 cool tools
 
 * firefox   addon vimperator is so powerful
-* vagrant   manage you virtual host by virtualbox
+* tmux   :  远程开发,管理必备利器
+* fish   : 开箱即用的 shell
+* ngrep  : 捕获 http 包，方便调试 Http 相关网络问题
+* ansible : 自动化部署软件
+* jenkins : 自动化构建
+* iftop   : 查看网络流量
+* ranger  : 命令行下的文件管理系统
 * docker    linux container more lighter than virutal host
-* ranger    file manage
-* tmux      remote
-* screen    remote
+* vagrant   manage you virtual host by virtualbox
 * watch
 * mplayer
 * cloc
 * backup-manager
 * autojump
-* fish
+
 
 
 * jq        json with shell
@@ -241,10 +245,11 @@ gprof2dot
 
 性能
 
+* dstat
 * vmstat
 * mpstat  //apt-get install sysstat
 * iostat
-* pidstat 监控进程
+* pidstat 监控进程, 查看各个线程的 CPU 消耗
 * htop
 * top
 * /proc/stat
@@ -256,6 +261,8 @@ gprof2dot
 * netstat
 * netstat –tlnp
 * pstree
+* cpulimit : 限制 CPU 的使用率
+* cgroup : 限制进程的使用比率
 
 磁盘
 
@@ -307,6 +314,7 @@ gprof2dot
 * ftrace
 * trace-cmd
 * ltrace
+* opensnoop : opensnoop -p $PID 程序实时打开文件. 比 strace 快. (需要 4.4+ 内核)
 
 
 压缩及解压
