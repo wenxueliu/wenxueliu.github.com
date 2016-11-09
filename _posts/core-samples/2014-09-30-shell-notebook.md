@@ -6,6 +6,8 @@ tags : [shell, linux, script]
 ---
 {% include JB/setup %}
 
+前提: 本文只讨论, Linux 中 Redhat 系和 Debian 系的 Bash.
+
 每次当我们完成系统登入(log in)，我们就取得一个互动模式的 shell ，也称为 login shell 或 primary shell。
 若从进程(process)角度来说，我们在 shell 所下达的命令，均是 shell 所产生的子进程。这现像，我们暂可称之
 为 fork 。如果是执行脚本(shell script)的话，脚本中的命令则是由另外一个非互动模式的子 shell (sub shell)
@@ -13,6 +15,121 @@ tags : [shell, linux, script]
 
 从技术细节来看，shell 会依据 IFS(Internal Field Seperator) 将 command line 所输入的文字给拆解为"字段"(word)。
 然后再针对特殊字符(meta)先作处理，最后再重组整行 command line 。
+
+###shell 类型
+
+交互式的shell会有一个输入提示符，并且它的标准输入、输出和错误输出都会显示在控制台上。所以一般来说只要是需要用户交互的。
+
+非交互式shell是 bash script.sh 这类的shell，脚本或程序执行完就结束了，没有交互。
+
+需要输入用户名和密码的shell就是登陆式shell。因此通常不管以何种方式登陆机器后用户获得的第一个shell就是login shell。不输入密码的ssh是公钥打通的，某种意义上说也是输入密码的。
+
+非登陆式的就是在登陆后启动bash等，即不是远程登陆到主机这种。
+
+
+* 登陆机器后的第一个shell：login + interactive
+* 新启动一个shell进程，如运行 bash：non-login + interactive
+* 执行脚本，如 bash script.sh：non-login + non-interactive
+* 运行头部有如#!/usr/bin/env bash的可执行文件，如./executable：non-login + non-interactive
+* 通过 ssh 登陆到远程主机：login + interactive
+* 远程执行脚本，如 ssh user@remote script.sh：non-login + non-interactive
+* 远程执行脚本，同时请求控制台，如 ssh user@remote -t 'echo $PWD'：non-login + interactive
+* 在图形化界面中打开terminal：
+* Linux上: non-login + interactive
+* Mac OS X上: login + interactive
+* su 到另外一个用户: non-login + interactive
+* sudo 执行命令: non-login + non-interactive
+* bash -l -c "command" :  login + non-interactive
+
+验证方式: 在每个配置文件末尾加入 echo file.
+
+##初始化顺序
+
+    登陆 shell : /etc/profile  ~/.bash_profile   ~/.profile
+    交互非登陆 shell : /etc/bash.bashrc ~/.bashrc, (linux 在 ~/.profile source ~/.bashrc)
+
+RedHat 系
+
+    ~/.bash_history  ~/.bash_logout   ~/.bash_profile   ~/.bashrc
+    /etc/profile      /etc/profile.d  /etc/environment  /etc/bashrc
+
+Debian 系
+
+    ~/.bash_history  ~/.bash_logout   ~/.bashrc         ~/.profile
+    /etc/profile      /etc/profile.d  /etc/environment  /etc/bash.bashrc
+
+###interactive + login shell
+
+依次加载, 一旦找到前者，便不再继续查找
+
+* /etc/profile
+* ~/.bash_profile
+* ~/.bash_login
+* ~/.profile
+
+设计如此多的配置是为了兼容 bourne shell 和 C shell，尽量杜绝使用 .bash_login，如果已创建，需要创建 .bash_profile 覆盖
+
+###noninteractive + login shell
+
+依次加载, 一旦找到前者，便不再继续查找
+
+* /etc/profile
+* ~/.bash_profile
+* ~/.bash_login
+* ~/.profile
+
+###interactive + non-login shell
+
+* /etc/bash.bashrc
+* ~/.bashrc
+
+###non-interactive + non-login shell
+
+环境变量 BASH_ENV
+
+总结
+
+    文件 	            非交互+登陆式 	交互+登陆式 	交互+非登陆式 	非交互+非登陆式
+    /etc/profile 	        加载 	        加载
+    /etc/profile.d 	        加载 	        加载
+    /etc/environment
+    /etc/bashrc 	        加载 	        加载
+    ~/.profile              加载 	        加载
+    ~/.bash_profile 	    加载 	        加载
+    ~/.bashrc 	                                            加载
+    /etc/bash.bashrc 	                                    加载
+    BASH_ENV 	  	  	  	                                                加载
+
+
+###跨机器传递环境变量
+
+方法一
+
+假设要传递的变量叫做 $VARNAME
+
+客户端机器的 /etc/ssh_config 添加
+
+    SendEnv VARNAME
+
+服务端机器的 /etc/sshd_config 添加
+
+    AcceptEnv VARNAME
+
+客户端机器的 $VARNAME 就可以通过 ssh 传递到服务端机器，继续使用.
+
+方法二
+
+$sudo vim /etc/ssh/sshd_config;
+
+    PermitUserEnvironment yes;
+
+$sudo service ssh restart;
+
+改完了后端，还需要给执行ssh的机器添加想要携带的环境变量
+
+vim ~/.ssh/environment
+
+
 
 ####参数
 
@@ -30,10 +147,6 @@ tags : [shell, linux, script]
  	$ for i in "$*" ;do  echo $i; done
     $ for i in "${@:2}"; do echo $i; done
 
-###初始化顺序
-
-    登陆 shell : /etc/profile  ~/.bash_profile  ~/.bash_login  ~/.profile
-    交互非登陆 shell : /etc/bash.bashrc ~/.bashrc, (linux 在 ~/.profile source ~/.bashrc)
 
 ###set 命令
 
@@ -941,4 +1054,10 @@ bash 的 test 目前支持的测试对像只有三种：
    显示最近登陆的用户及时间
 
 ###参考
+
 http://www.tinylab.org/bash-debugging-tools/
+http://zheng-ji.info/blog/2016/07/16/bash-jia-zai-shun-xu/
+http://www.kryptosx.info/archives/977.html
+https://ruby-china.org/topics/29477
+http://feihu.me/blog/2014/env-problem-when-ssh-executing-command-on-remote/
+man bash
