@@ -115,6 +115,7 @@ lsof -lnPR +c0 -Di +f fgn 我最喜欢的lsof参数前缀。
 * cpuid : CPU 详细信息
 * update-rc.d : 开机启动服务管理
 * top  press f press j
+* lshw 查看硬件配置, cpu, memory, iface
 
 
 配置管理
@@ -234,9 +235,12 @@ gprof2dot
 * http-prompt : pip install http-prompt
 * aria2 : 下载工具
 
+* wrk
+* ab
+* Jemeter
+* Ngrinder
 * httpload
 * webbench
-* ab
 * siege
 * autobench
 * httperf
